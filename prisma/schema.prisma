@@ -1,5 +1,4 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
+// Prisma schema — learn more: https://pris.ly/d/prisma-schema
 
 generator client {
     provider = "prisma-client-js"
@@ -11,11 +10,223 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
-model Post {
-    id        Int      @id @default(autoincrement())
-    name      String
+enum Role {
+    FOUNDER
+    ADMIN
+    OFFICER_ALL
+    OFFICER_MINUTES
+    OFFICER_GAMES
+    OFFICER_POLLS
+    OFFICER_FUNDRAISERS
+    ADVISOR
+    MEMBER
+}
+
+/// Users are mirrored from Clerk. `id` is the Clerk user ID (e.g. "user_abc123").
+model User {
+    id          String  @id
+    email       String  @unique
+    displayName String
+    avatarUrl   String?
+    roles       Role[]  @default([MEMBER])
+    gradeYear   Int?
+
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
-    @@index([name])
+    polls         Poll[]               @relation("PollCreator")
+    votes         Vote[]
+    minutes       MeetingMinutes[]     @relation("MinutesAuthor")
+    notifications NotifySubscription[]
+    fundraisers   Fundraiser[]         @relation("FundraiserCreator")
+    chatMessages  ChatMessage[]        @relation("ChatAuthor")
+    chatDeletions ChatMessage[]        @relation("ChatDeleter")
+    chatMemberships ChatRoomMember[]
+    chatMutes     ChatMute[]           @relation("ChatMuteTarget")
+    chatMutesIssued ChatMute[]         @relation("ChatMuteIssuer")
 }
+
+/// Polls officers raise for members to vote on (future feature ideas, prize
+/// rules, etc.). Exactly one vote per user per poll.
+model Poll {
+    id          String    @id @default(cuid())
+    title       String
+    description String?
+    createdById String
+    createdBy   User      @relation("PollCreator", fields: [createdById], references: [id])
+    createdAt   DateTime  @default(now())
+    closesAt    DateTime?
+    isClosed    Boolean   @default(false)
+
+    options PollOption[]
+    votes   Vote[]
+
+    @@index([isClosed, createdAt])
+}
+
+model PollOption {
+    id       String @id @default(cuid())
+    pollId   String
+    poll     Poll   @relation(fields: [pollId], references: [id], onDelete: Cascade)
+    label    String
+    position Int    @default(0)
+
+    votes Vote[]
+
+    @@index([pollId])
+}
+
+model Vote {
+    id           String     @id @default(cuid())
+    pollId       String
+    poll         Poll       @relation(fields: [pollId], references: [id], onDelete: Cascade)
+    pollOptionId String
+    pollOption   PollOption @relation(fields: [pollOptionId], references: [id], onDelete: Cascade)
+    userId       String
+    user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+    createdAt    DateTime   @default(now())
+
+    @@unique([pollId, userId])
+    @@index([pollOptionId])
+}
+
+/// Wednesday meeting minutes (and any other meeting notes the Secretary posts).
+model MeetingMinutes {
+    id          String   @id @default(cuid())
+    title       String
+    meetingAt   DateTime
+    content     String   @db.Text
+    isPublished Boolean  @default(true)
+    authorId    String
+    author      User     @relation("MinutesAuthor", fields: [authorId], references: [id])
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
+
+    @@index([meetingAt])
+}
+
+/// End-of-month snapshot of the trophy leaderboard. Written by a cron/manual
+/// job on the 1st so the "hall of fame" page never has to recompute historical
+/// standings from raw games.
+model MonthlyArchive {
+    id       String   @id @default(cuid())
+    month    Int // 1-12
+    year     Int
+    /// { community: [{ userId, displayName, wins }], pro: [...] }
+    snapshot Json
+    closedAt DateTime @default(now())
+
+    @@unique([year, month])
+}
+
+/// Email notify-me list (e.g. for the leaderboard coming-soon teaser). `userId`
+/// is optional so non-signed-in visitors can still subscribe.
+model NotifySubscription {
+    id        String   @id @default(cuid())
+    email     String
+    topic     String
+    userId    String?
+    user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+    createdAt DateTime @default(now())
+
+    @@unique([email, topic])
+    @@index([topic])
+}
+
+/// Fundraising campaigns run by the club. `goalCents` / `raisedCents` are
+/// stored as integers to avoid float rounding. `raisedCents` is updated
+/// manually by the fundraiser officer as money comes in.
+model Fundraiser {
+    id          String    @id @default(cuid())
+    title       String
+    description String    @db.Text
+    goalCents   Int?
+    raisedCents Int       @default(0)
+    startsAt    DateTime?
+    endsAt      DateTime?
+    isClosed    Boolean   @default(false)
+    createdById String
+    createdBy   User      @relation("FundraiserCreator", fields: [createdById], references: [id])
+    createdAt   DateTime  @default(now())
+    updatedAt   DateTime  @updatedAt
+
+    @@index([isClosed, createdAt])
+}
+
+enum ChatRoomKind {
+    ROOM
+    DM
+}
+
+/// Chat rooms (named channels like #general, #officers) and DMs (kind=DM).
+/// For DMs, membership is exactly 2 users; `slug` is synthesized from their
+/// IDs (lowest first) so the same pair always maps to the same row.
+model ChatRoom {
+    id              String       @id @default(cuid())
+    slug            String       @unique
+    name            String
+    description     String?
+    kind            ChatRoomKind @default(ROOM)
+    isOfficerOnly   Boolean      @default(false)
+    createdAt       DateTime     @default(now())
+
+    members  ChatRoomMember[]
+    messages ChatMessage[]
+    mutes    ChatMute[]
+
+    @@index([kind])
+}
+
+model ChatRoomMember {
+    id         String    @id @default(cuid())
+    roomId     String
+    room       ChatRoom  @relation(fields: [roomId], references: [id], onDelete: Cascade)
+    userId     String
+    user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+    joinedAt   DateTime  @default(now())
+    lastReadAt DateTime?
+
+    @@unique([roomId, userId])
+    @@index([userId])
+}
+
+model ChatMessage {
+    id        String   @id @default(cuid())
+    roomId    String
+    room      ChatRoom @relation(fields: [roomId], references: [id], onDelete: Cascade)
+    authorId  String
+    author    User     @relation("ChatAuthor", fields: [authorId], references: [id])
+    content   String   @db.Text
+    createdAt DateTime @default(now())
+
+    // Soft delete: keep row for audit, hide content in UI.
+    deletedAt   DateTime?
+    deletedById String?
+    deletedBy   User?     @relation("ChatDeleter", fields: [deletedById], references: [id])
+
+    @@index([roomId, createdAt])
+}
+
+/// Silences a user in one specific room, or globally when roomId is null.
+model ChatMute {
+    id         String    @id @default(cuid())
+    roomId     String?
+    room       ChatRoom? @relation(fields: [roomId], references: [id], onDelete: Cascade)
+    userId     String
+    user       User      @relation("ChatMuteTarget", fields: [userId], references: [id], onDelete: Cascade)
+    mutedById  String
+    mutedBy    User      @relation("ChatMuteIssuer", fields: [mutedById], references: [id])
+    mutedUntil DateTime?
+    reason     String?
+    createdAt  DateTime  @default(now())
+
+    @@index([userId, roomId])
+}
+
+// ---------------------------------------------------------------------------
+// Games: intentionally deferred.
+//
+// The shape of `Game` / `GamePlayer` depends on the win model chosen in
+// docs/games-win-model.md (one-winner vs. ranked placement vs. points-based).
+// Once decided, add the models + run `bun run db:push`.
+// ---------------------------------------------------------------------------
