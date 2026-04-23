@@ -5,16 +5,7 @@ import { ArrowLeft, Trophy } from "lucide-react";
 import { db } from "~/server/db";
 import { parseArchiveSnapshot } from "~/server/archive";
 import type { MonthStandings } from "~/server/standings";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "~/components/ui/table";
-import { buttonVariants } from "~/components/ui/button";
-import { cn } from "~/lib/utils";
+import { Eyebrow, Reveal, Section } from "~/components/primitives";
 
 const monthFmt = new Intl.DateTimeFormat("en-US", { month: "long" });
 
@@ -47,28 +38,33 @@ export default async function ArchiveDetailPage({
   const label = `${monthFmt.format(new Date(yearNum, monthNum - 1, 1))} ${yearNum}`;
 
   return (
-    <section className="mx-auto w-full max-w-3xl px-4 py-12 sm:px-6">
-      <Link
-        href="/archive"
-        className={cn(buttonVariants({ variant: "ghost", size: "sm" }), "mb-4")}
-      >
-        <ArrowLeft className="mr-1 size-4" />
-        All months
-      </Link>
-      <h1 className="text-3xl font-bold tracking-tight">{label}</h1>
-      <p className="text-muted-foreground mb-8 text-sm">
-        Closed on {archive.closedAt.toLocaleString()}
-      </p>
+    <Section accent="yellow">
+      <article className="container-page" style={{ maxWidth: 880 }}>
+        <Link href="/archive" className="back-link">
+          <ArrowLeft size={12} />
+          All months
+        </Link>
 
-      <div className="grid gap-6 md:grid-cols-2">
-        <StandingsCard
-          title="Community — silver"
-          tier="silver"
-          rows={standings.community}
-        />
-        <StandingsCard title="Pro — gold" tier="gold" rows={standings.pro} />
-      </div>
-    </section>
+        <div className="page-head">
+          <div>
+            <Eyebrow>Hall of fame</Eyebrow>
+            <h1>{label}</h1>
+            <p className="sub" style={{ marginTop: 10 }}>
+              Closed on {archive.closedAt.toLocaleString()}
+            </p>
+          </div>
+        </div>
+
+        <Reveal as="div" className="standings-grid" stagger>
+          <StandingsCard
+            title="Community — silver"
+            tier="silver"
+            rows={standings.community}
+          />
+          <StandingsCard title="Pro — gold" tier="gold" rows={standings.pro} />
+        </Reveal>
+      </article>
+    </Section>
   );
 }
 
@@ -82,45 +78,34 @@ function StandingsCard({
   rows: MonthStandings["community"];
 }) {
   return (
-    <div className="bg-card rounded-2xl border">
-      <div className="flex items-center gap-2 border-b px-5 py-3">
-        <Trophy
-          className={cn(
-            "size-4",
-            tier === "silver"
-              ? "text-[color:var(--trophy-silver)]"
-              : "text-[color:var(--trophy-gold)]",
-          )}
-        />
-        <span className="font-semibold">{title}</span>
+    <div className="standings-card">
+      <div className="standings-card-head" data-tier={tier}>
+        <Trophy size={14} className="standings-trophy-icon" />
+        <span className="standings-card-title">{title}</span>
       </div>
       {rows.length === 0 ? (
-        <p className="text-muted-foreground px-5 py-6 text-center text-sm">
-          No wins recorded this month.
-        </p>
+        <p className="standings-empty">No wins recorded this month.</p>
       ) : (
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead className="w-12">#</TableHead>
-              <TableHead>Player</TableHead>
-              <TableHead className="text-right">Wins</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
+        <table className="admin-table">
+          <thead>
+            <tr>
+              <th style={{ width: 48 }}>#</th>
+              <th>Player</th>
+              <th className="cell-right">Wins</th>
+            </tr>
+          </thead>
+          <tbody>
             {rows.map((row, i) => (
-              <TableRow key={row.userId}>
-                <TableCell className="text-muted-foreground font-mono">
-                  {i + 1}
-                </TableCell>
-                <TableCell className="font-medium">{row.displayName}</TableCell>
-                <TableCell className="text-right tabular-nums">
+              <tr key={row.userId}>
+                <td className="cell-note">{i + 1}</td>
+                <td className="cell-name">{row.displayName}</td>
+                <td className="cell-right" style={{ fontVariantNumeric: "tabular-nums" }}>
                   {row.wins}
-                </TableCell>
-              </TableRow>
+                </td>
+              </tr>
             ))}
-          </TableBody>
-        </Table>
+          </tbody>
+        </table>
       )}
     </div>
   );

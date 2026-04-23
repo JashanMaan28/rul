@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Trophy } from "lucide-react";
 import { ComingSoon } from "~/components/site/coming-soon";
 import { NotifyForm } from "./notify-form";
-import { cn } from "~/lib/utils";
 
 export const metadata: Metadata = {
   title: "Leaderboard",
@@ -16,7 +15,7 @@ export default function LeaderboardPage() {
       title="Leaderboard — stacking soon."
       description="Silver trophies for community session wins, gold for pro sessions. Monthly leaderboard resets on the 1st for prizes; all-time sticks around for bragging rights."
     >
-      <div className="flex items-end justify-center gap-6">
+      <div className="trophy-row">
         <TrophyMockup tier="silver" label="Silver · community" count={0} />
         <TrophyMockup tier="gold" label="Gold · pro" count={0} elevated />
       </div>
@@ -37,34 +36,13 @@ function TrophyMockup({
   elevated?: boolean;
 }) {
   return (
-    <div
-      className={cn(
-        "bg-card flex flex-col items-center gap-3 rounded-2xl border p-6",
-        elevated && "-translate-y-2",
-      )}
-    >
-      <div
-        className={cn(
-          "inline-flex size-20 items-center justify-center rounded-full border-4 shadow-inner",
-          tier === "silver"
-            ? "border-[color:var(--trophy-silver)] bg-[color:var(--trophy-silver)]/30"
-            : "border-[color:var(--trophy-gold)] bg-[color:var(--trophy-gold)]/30",
-        )}
-      >
-        <Trophy
-          className={cn(
-            "size-10",
-            tier === "silver"
-              ? "text-[color:var(--trophy-silver)]"
-              : "text-[color:var(--trophy-gold)]",
-          )}
-        />
+    <div className="trophy-mock" data-elevated={elevated ? "true" : undefined}>
+      <div className="trophy-orb" data-tier={tier}>
+        <Trophy size={36} />
       </div>
-      <div className="text-center">
-        <div className="text-3xl font-black tabular-nums">{count}</div>
-        <div className="text-muted-foreground text-xs tracking-wider uppercase">
-          {label}
-        </div>
+      <div style={{ textAlign: "center", display: "grid", gap: 4 }}>
+        <div className="trophy-count">{count}</div>
+        <div className="trophy-label">{label}</div>
       </div>
     </div>
   );

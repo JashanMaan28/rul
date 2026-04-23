@@ -2,8 +2,6 @@
 
 import { useState } from "react";
 import { toast } from "sonner";
-import { Button } from "~/components/ui/button";
-import { Input } from "~/components/ui/input";
 import { subscribeToNotify } from "./_actions";
 
 export function NotifyForm() {
@@ -27,21 +25,19 @@ export function NotifyForm() {
   }
 
   return (
-    <form
-      onSubmit={onSubmit}
-      className="flex w-full max-w-md flex-col items-stretch gap-2 sm:flex-row"
-    >
-      <Input
+    <form onSubmit={onSubmit} className="notify-form">
+      <input
         type="email"
         required
         placeholder="you@riponhs.example"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
         aria-label="Email for launch notification"
+        className="form-input"
       />
-      <Button type="submit" disabled={submitting}>
+      <button type="submit" disabled={submitting} className="btn btn-primary">
         {submitting ? "Saving…" : "Notify me"}
-      </Button>
+      </button>
     </form>
   );
 }

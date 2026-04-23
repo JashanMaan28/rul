@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import { buttonVariants } from "~/components/ui/button";
-import { cn } from "~/lib/utils";
+import { Aurora, Eyebrow, GridBG } from "~/components/primitives";
 
 type ComingSoonProps = {
   title: string;
@@ -19,24 +18,21 @@ export function ComingSoon({
   backLabel = "Back to home",
 }: ComingSoonProps) {
   return (
-    <section className="mx-auto flex min-h-[calc(100vh-16rem)] w-full max-w-4xl flex-col items-center justify-center gap-8 px-4 py-16 text-center sm:px-6">
-      <div className="space-y-3">
-        <div className="text-muted-foreground text-sm font-medium tracking-widest uppercase">
-          Coming soon
+    <section className="coming-soon-shell">
+      <Aurora />
+      <GridBG />
+      <div className="coming-soon-inner">
+        <div style={{ display: "grid", gap: 12, justifyItems: "center" }}>
+          <Eyebrow>Coming soon</Eyebrow>
+          <h1 className="coming-soon-title">{title}</h1>
+          <p className="coming-soon-desc">{description}</p>
         </div>
-        <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
-          {title}
-        </h1>
-        <p className="text-muted-foreground mx-auto max-w-xl">{description}</p>
+        {children}
+        <Link href={backHref} className="back-link" style={{ marginTop: 6 }}>
+          <ArrowLeft size={12} />
+          {backLabel}
+        </Link>
       </div>
-      {children}
-      <Link
-        href={backHref}
-        className={cn(buttonVariants({ variant: "ghost" }))}
-      >
-        <ArrowLeft className="mr-1 size-4" />
-        {backLabel}
-      </Link>
     </section>
   );
 }
