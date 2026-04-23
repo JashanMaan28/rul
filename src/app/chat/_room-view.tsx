@@ -4,8 +4,6 @@ import { useEffect, useRef, useState } from "react";
 import { useChannel } from "ably/react";
 import { toast } from "sonner";
 import { Trash2, VolumeX } from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
-import { Button } from "~/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,8 +11,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
-import { Textarea } from "~/components/ui/textarea";
-import { cn } from "~/lib/utils";
+import { Ava } from "~/components/primitives";
 import {
   deleteMessage,
   markRoomRead,
@@ -36,6 +33,10 @@ type Message = {
   deletedAt: string | null;
   author: Author;
 };
+
+function initials(name: string): string {
+  return name.slice(0, 2).toUpperCase();
+}
 
 export function ChatRoomView({
   roomId,
@@ -72,7 +73,6 @@ export function ChatRoomView({
   });
 
   useEffect(() => {
-    // Keep scroll pinned to bottom on new messages.
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight });
   }, [messages.length]);
 
@@ -127,55 +127,53 @@ export function ChatRoomView({
 
   return (
     <>
-      <div ref={scrollRef} className="flex-1 overflow-y-auto px-5 py-4">
+      <div ref={scrollRef} className="chat-messages">
         {messages.length === 0 ? (
-          <p className="text-muted-foreground py-10 text-center text-sm">
-            No messages yet. Say hi.
-          </p>
+          <p className="chat-messages-empty">No messages yet. Say hi.</p>
         ) : (
-          <ul className="space-y-4">
-            {messages.map((m) => (
-              <MessageRow
-                key={m.id}
-                message={m}
-                isSelf={m.author.id === currentUserId}
-                canModerate={canModerate}
-                onDelete={onDelete}
-                onMute={onMute}
-                onUnmute={onUnmute}
-              />
-            ))}
-          </ul>
+          messages.map((m) => (
+            <MessageRow
+              key={m.id}
+              message={m}
+              isSelf={m.author.id === currentUserId}
+              canModerate={canModerate}
+              onDelete={onDelete}
+              onMute={onMute}
+              onUnmute={onUnmute}
+            />
+          ))
         )}
       </div>
 
-      <div className="border-t p-3">
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            void onSend();
+      <form
+        className="chat-composer"
+        onSubmit={(e) => {
+          e.preventDefault();
+          void onSend();
+        }}
+      >
+        <textarea
+          className="form-textarea"
+          value={draft}
+          onChange={(e) => setDraft(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && !e.shiftKey) {
+              e.preventDefault();
+              void onSend();
+            }
           }}
-          className="flex items-end gap-2"
+          rows={1}
+          maxLength={4000}
+          placeholder="Write a message… (Enter to send, Shift+Enter for newline)"
+        />
+        <button
+          type="submit"
+          disabled={sending || !draft.trim()}
+          className="btn btn-primary"
         >
-          <Textarea
-            value={draft}
-            onChange={(e) => setDraft(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" && !e.shiftKey) {
-                e.preventDefault();
-                void onSend();
-              }
-            }}
-            rows={1}
-            maxLength={4000}
-            placeholder="Write a message… (Enter to send, Shift+Enter for newline)"
-            className="min-h-[40px] resize-none"
-          />
-          <Button type="submit" disabled={sending || !draft.trim()}>
-            Send
-          </Button>
-        </form>
-      </div>
+          Send
+        </button>
+      </form>
     </>
   );
 }
@@ -202,28 +200,17 @@ function MessageRow({
   const isDeleted = !!message.deletedAt;
   const canMuteAuthor = canModerate && !isSelf;
 
-  const nameClass = cn(
-    "text-sm font-semibold",
-    isSelf && "text-[color:var(--uno-red)]",
-  );
-
   return (
-    <li className="group flex items-start gap-3">
-      <Avatar className="size-8 shrink-0">
-        <AvatarImage src={message.author.avatarUrl ?? undefined} alt="" />
-        <AvatarFallback className="text-xs">
-          {message.author.displayName.slice(0, 2).toUpperCase()}
-        </AvatarFallback>
-      </Avatar>
-      <div className="min-w-0 flex-1">
-        <div className="flex items-baseline gap-2">
+    <div className="chat-message">
+      <Ava init={initials(message.author.displayName)} size={32} />
+      <div className="chat-message-body">
+        <div className="chat-message-head">
           {canMuteAuthor ? (
             <DropdownMenu>
               <DropdownMenuTrigger
-                className={cn(
-                  nameClass,
-                  "focus-visible:ring-ring rounded hover:underline focus:outline-none focus-visible:ring-2",
-                )}
+                className="chat-message-name"
+                data-moderatable="true"
+                data-self={isSelf}
               >
                 {message.author.displayName}
               </DropdownMenuTrigger>
@@ -259,32 +246,31 @@ function MessageRow({
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
-            <span className={nameClass}>{message.author.displayName}</span>
+            <span className="chat-message-name" data-self={isSelf}>
+              {message.author.displayName}
+            </span>
           )}
-          <span className="text-muted-foreground text-xs">{time}</span>
+          <span className="chat-message-time">{time}</span>
         </div>
         {isDeleted ? (
-          <p className="text-muted-foreground text-sm italic">
+          <p className="chat-message-deleted">
             [message deleted by a moderator]
           </p>
         ) : (
-          <p className="text-sm leading-relaxed break-words whitespace-pre-wrap">
-            {message.content}
-          </p>
+          <p className="chat-message-text">{message.content}</p>
         )}
       </div>
       {canModerate && !isDeleted ? (
-        <Button
-          variant="ghost"
-          size="sm"
+        <button
+          type="button"
           onClick={() => onDelete(message.id)}
-          className="opacity-0 transition-opacity group-hover:opacity-100"
+          className="chat-message-mod icon-btn icon-btn-danger"
           aria-label="Delete message"
         >
-          <Trash2 className="size-4" />
-        </Button>
+          <Trash2 size={14} />
+        </button>
       ) : null}
-    </li>
+    </div>
   );
 }
 

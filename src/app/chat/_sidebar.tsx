@@ -5,9 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useTransition } from "react";
 import { toast } from "sonner";
 import { Hash, Lock, Users, Plus } from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
-import { Button } from "~/components/ui/button";
-import { cn } from "~/lib/utils";
+import { Ava } from "~/components/primitives";
 import { startDm } from "./_actions";
 
 type Room = {
@@ -29,6 +27,10 @@ type Officer = {
   displayName: string;
   avatarUrl: string | null;
 };
+
+function initials(name: string): string {
+  return name.slice(0, 2).toUpperCase();
+}
 
 export function ChatSidebar({
   rooms,
@@ -67,100 +69,94 @@ export function ChatSidebar({
   }
 
   return (
-    <aside className="space-y-6 md:sticky md:top-20 md:self-start">
-      <div>
-        <h2 className="text-muted-foreground mb-2 px-2 text-xs font-semibold tracking-widest uppercase">
-          Rooms
-        </h2>
-        <ul className="space-y-0.5">
-          {namedRooms.map((room) => (
-            <li key={room.id}>
-              <Link
-                href={`/chat/${room.slug}`}
-                className={cn(
-                  "hover:bg-muted flex items-center gap-2 rounded-md px-2 py-1.5 text-sm font-medium transition-colors",
-                  activeSlug === room.slug && "bg-muted",
-                )}
-              >
-                {room.isOfficerOnly ? (
-                  <Lock className="text-muted-foreground size-4" />
-                ) : (
-                  <Hash className="text-muted-foreground size-4" />
-                )}
-                <span className="truncate">{room.name.replace(/^#/, "")}</span>
-                <UnreadBadge
-                  count={room.unreadCount}
-                  hidden={activeSlug === room.slug}
-                />
-              </Link>
-            </li>
-          ))}
+    <aside className="chat-sidebar">
+      <div className="chat-sidebar-group">
+        <div className="chat-sidebar-group-head">Rooms</div>
+        <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
+          {namedRooms.map((room) => {
+            const active = activeSlug === room.slug;
+            return (
+              <li key={room.id}>
+                <Link
+                  href={`/chat/${room.slug}`}
+                  className="chat-nav-item"
+                  data-active={active}
+                  style={{ textDecoration: "none" }}
+                >
+                  {room.isOfficerOnly ? (
+                    <Lock size={14} />
+                  ) : (
+                    <Hash size={14} />
+                  )}
+                  <span className="chat-nav-item-label">
+                    {room.name.replace(/^#/, "")}
+                  </span>
+                  {!active && room.unreadCount > 0 ? (
+                    <span className="chat-nav-item-trailing chat-unread-pill">
+                      {room.unreadCount > 50 ? "50+" : room.unreadCount}
+                    </span>
+                  ) : null}
+                </Link>
+              </li>
+            );
+          })}
         </ul>
       </div>
 
       {dmRooms.length > 0 ? (
-        <div>
-          <h2 className="text-muted-foreground mb-2 px-2 text-xs font-semibold tracking-widest uppercase">
-            Direct messages
-          </h2>
-          <ul className="space-y-0.5">
-            {dmRooms.map((room) => (
-              <li key={room.id}>
-                <Link
-                  href={`/chat/${room.slug}`}
-                  className={cn(
-                    "hover:bg-muted flex items-center gap-2 rounded-md px-2 py-1.5 text-sm transition-colors",
-                    activeSlug === room.slug && "bg-muted",
-                  )}
-                >
-                  <Avatar className="size-6">
-                    <AvatarImage
-                      src={room.otherMember?.avatarUrl ?? undefined}
-                      alt=""
-                    />
-                    <AvatarFallback className="text-[10px]">
-                      {(room.otherMember?.displayName ?? "?")
-                        .slice(0, 2)
-                        .toUpperCase()}
-                    </AvatarFallback>
-                  </Avatar>
-                  <span className="truncate">
-                    {room.otherMember?.displayName ?? "Unknown"}
-                  </span>
-                  <UnreadBadge
-                    count={room.unreadCount}
-                    hidden={activeSlug === room.slug}
-                  />
-                </Link>
-              </li>
-            ))}
+        <div className="chat-sidebar-group">
+          <div className="chat-sidebar-group-head">Direct messages</div>
+          <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
+            {dmRooms.map((room) => {
+              const active = activeSlug === room.slug;
+              const name = room.otherMember?.displayName ?? "Unknown";
+              return (
+                <li key={room.id}>
+                  <Link
+                    href={`/chat/${room.slug}`}
+                    className="chat-nav-item"
+                    data-active={active}
+                    style={{ textDecoration: "none" }}
+                  >
+                    <Ava init={initials(name)} size={22} />
+                    <span className="chat-nav-item-label">{name}</span>
+                    {!active && room.unreadCount > 0 ? (
+                      <span className="chat-nav-item-trailing chat-unread-pill">
+                        {room.unreadCount > 50 ? "50+" : room.unreadCount}
+                      </span>
+                    ) : null}
+                  </Link>
+                </li>
+              );
+            })}
           </ul>
         </div>
       ) : null}
 
       {officers.length > 0 ? (
-        <div>
-          <h2 className="text-muted-foreground mb-2 flex items-center gap-1 px-2 text-xs font-semibold tracking-widest uppercase">
-            <Users className="size-3.5" />
+        <div className="chat-sidebar-group">
+          <div className="chat-sidebar-group-head">
+            <Users size={12} />
             Officers
-          </h2>
-          <ul className="space-y-0.5">
+          </div>
+          <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
             {officersWithoutDm.map((officer) => (
               <li key={officer.id}>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="h-auto w-full justify-start px-2 py-1.5 font-normal"
+                <button
+                  type="button"
+                  className="chat-nav-item chat-nav-add"
                   disabled={pending}
                   onClick={() => openDm(officer.id)}
                 >
-                  <Plus className="text-muted-foreground size-3.5" />
-                  <span className="truncate">{officer.displayName}</span>
-                </Button>
+                  <Plus size={14} />
+                  <span className="chat-nav-item-label">
+                    {officer.displayName}
+                  </span>
+                </button>
               </li>
             ))}
             {officersWithoutDm.length === 0 ? (
-              <li className="text-muted-foreground px-2 py-1 text-xs">
+              <li className="chat-sidebar-empty">
                 You have DMs with every officer.
               </li>
             ) : null}
@@ -168,14 +164,5 @@ export function ChatSidebar({
         </div>
       ) : null}
     </aside>
-  );
-}
-
-function UnreadBadge({ count, hidden }: { count: number; hidden: boolean }) {
-  if (hidden || count <= 0) return null;
-  return (
-    <span className="ml-auto min-w-5 rounded-full bg-[color:var(--uno-red)] px-1.5 text-center text-[11px] leading-5 font-semibold text-white">
-      {count > 50 ? "50+" : count}
-    </span>
   );
 }

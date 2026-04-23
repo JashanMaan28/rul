@@ -1921,6 +1921,296 @@ button:hover .rul-mark {
   }
 }
 
+/* ---------- Chat ---------- */
+.chat-shell {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: 1fr;
+  padding: clamp(18px, 3vw, 28px) clamp(14px, 3vw, 24px);
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
+@media (min-width: 900px) {
+  .chat-shell {
+    grid-template-columns: 260px minmax(0, 1fr);
+    align-items: start;
+  }
+}
+.chat-sidebar {
+  display: grid;
+  gap: 20px;
+  position: relative;
+}
+@media (min-width: 900px) {
+  .chat-sidebar {
+    position: sticky;
+    top: 80px;
+  }
+}
+.chat-sidebar-group {
+  display: grid;
+  gap: 4px;
+}
+.chat-sidebar-group-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 6px 6px;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+.chat-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--text-2);
+  font-size: 13.5px;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color 0.15s ease,
+    background 0.15s ease,
+    color 0.15s ease;
+  min-width: 0;
+}
+.chat-nav-item svg {
+  flex-shrink: 0;
+  color: var(--text-3);
+}
+.chat-nav-item:hover {
+  background: var(--surface);
+  border-color: var(--border);
+  color: var(--text);
+}
+.chat-nav-item:hover svg {
+  color: var(--text-2);
+}
+.chat-nav-item[data-active="true"] {
+  background: var(--surface-2);
+  border-color: var(--border-strong);
+  color: var(--text);
+  font-weight: 500;
+}
+.chat-nav-item[data-active="true"] svg {
+  color: var(--text);
+}
+.chat-nav-item-label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.chat-nav-item-trailing {
+  margin-left: auto;
+  flex-shrink: 0;
+}
+.chat-nav-add {
+  color: var(--text-3);
+}
+.chat-nav-add:hover {
+  color: var(--text);
+}
+.chat-nav-add svg {
+  color: var(--text-3);
+}
+.chat-unread-pill {
+  min-width: 20px;
+  padding: 0 7px;
+  height: 18px;
+  line-height: 18px;
+  border-radius: 999px;
+  background: var(--uno-red);
+  color: #fff;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 700;
+  text-align: center;
+  letter-spacing: 0;
+}
+.chat-sidebar-empty {
+  padding: 6px 10px;
+  font-size: 12px;
+  color: var(--text-3);
+}
+
+.chat-main {
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: var(--surface);
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100vh - 160px);
+  max-height: calc(100vh - 140px);
+  overflow: hidden;
+  min-width: 0;
+}
+.chat-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border);
+  background: color-mix(in srgb, var(--surface-2) 40%, var(--surface));
+}
+.chat-header-icon {
+  color: var(--text-3);
+  flex-shrink: 0;
+}
+.chat-header-title {
+  font-family: var(--font-display);
+  font-size: 16px;
+  letter-spacing: -0.01em;
+  color: var(--text);
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.chat-header-desc {
+  margin-left: 6px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-3);
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.chat-messages {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 16px 18px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.chat-messages-empty {
+  margin: auto;
+  color: var(--text-3);
+  font-size: 13.5px;
+  text-align: center;
+  padding: 32px 0;
+}
+.chat-message {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  position: relative;
+}
+.chat-message-body {
+  min-width: 0;
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.chat-message-head {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.chat-message-name {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--text);
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: default;
+}
+.chat-message-name[data-moderatable="true"] {
+  cursor: pointer;
+  border-radius: 4px;
+}
+.chat-message-name[data-moderatable="true"]:hover {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.chat-message-name[data-self="true"] {
+  color: color-mix(in srgb, var(--uno-red) 55%, var(--text));
+}
+.chat-message-time {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  color: var(--text-3);
+  letter-spacing: 0.04em;
+}
+.chat-message-text {
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--text);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  margin: 0;
+}
+.chat-message-deleted {
+  font-size: 13px;
+  font-style: italic;
+  color: var(--text-3);
+  margin: 0;
+}
+.chat-message-mod {
+  margin-left: auto;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+.chat-message:hover .chat-message-mod {
+  opacity: 1;
+}
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text-3);
+  cursor: pointer;
+  transition:
+    border-color 0.15s ease,
+    background 0.15s ease,
+    color 0.15s ease;
+}
+.icon-btn:hover {
+  border-color: var(--border);
+  background: var(--surface-2);
+  color: var(--text);
+}
+.icon-btn-danger:hover {
+  color: color-mix(in srgb, var(--uno-red) 80%, var(--text));
+  border-color: color-mix(in srgb, var(--uno-red) 40%, var(--border));
+  background: color-mix(in srgb, var(--uno-red) 12%, var(--surface-2));
+}
+
+.chat-composer {
+  border-top: 1px solid var(--border);
+  padding: 12px 14px;
+  background: color-mix(in srgb, var(--surface-2) 30%, var(--surface));
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+}
+.chat-composer textarea {
+  flex: 1 1 auto;
+  min-height: 40px;
+  max-height: 200px;
+  resize: none;
+}
+
 /* ---------- Page transitions ---------- */
 .page-enter {
   animation: page-in 0.4s cubic-bezier(0.2, 0.7, 0.2, 1) both;

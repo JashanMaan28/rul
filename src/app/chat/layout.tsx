@@ -46,7 +46,7 @@ export default async function ChatLayout({
 
   return (
     <AblyChatProvider>
-      <div className="mx-auto grid w-full max-w-6xl gap-4 px-4 py-8 sm:px-6 md:grid-cols-[260px_minmax(0,1fr)]">
+      <div className="chat-shell">
         <ChatSidebar
           rooms={rooms.map((r) => ({
             id: r.id,
@@ -60,7 +60,7 @@ export default async function ChatLayout({
           officers={officers}
           currentUserId={user.id}
         />
-        <main className="bg-card min-w-0 rounded-2xl border">{children}</main>
+        <main className="chat-main">{children}</main>
       </div>
     </AblyChatProvider>
   );

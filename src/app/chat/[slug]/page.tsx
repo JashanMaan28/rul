@@ -54,35 +54,31 @@ export default async function ChatRoomPage({
 
   return (
     <ChatChannelProvider channelName={channelNameForRoom(room.slug)}>
-      <div className="flex h-[calc(100vh-8rem)] flex-col">
-        <header className="flex items-center gap-2 border-b px-5 py-3">
-          {room.kind === "DM" ? null : room.isOfficerOnly ? (
-            <Lock className="text-muted-foreground size-4" />
-          ) : (
-            <Hash className="text-muted-foreground size-4" />
-          )}
-          <h1 className="truncate font-semibold">{headerName}</h1>
-          {room.description ? (
-            <span className="text-muted-foreground ml-3 truncate text-xs">
-              {room.description}
-            </span>
-          ) : null}
-        </header>
+      <header className="chat-header">
+        {room.kind === "DM" ? null : room.isOfficerOnly ? (
+          <Lock size={14} className="chat-header-icon" />
+        ) : (
+          <Hash size={14} className="chat-header-icon" />
+        )}
+        <h1 className="chat-header-title">{headerName}</h1>
+        {room.description ? (
+          <span className="chat-header-desc">{room.description}</span>
+        ) : null}
+      </header>
 
-        <ChatRoomView
-          roomId={room.id}
-          channelName={channelNameForRoom(room.slug)}
-          initialMessages={messages.map((m) => ({
-            id: m.id,
-            content: m.content,
-            createdAt: m.createdAt.toISOString(),
-            deletedAt: m.deletedAt?.toISOString() ?? null,
-            author: m.author,
-          }))}
-          currentUserId={user.id}
-          canModerate={canModerate}
-        />
-      </div>
+      <ChatRoomView
+        roomId={room.id}
+        channelName={channelNameForRoom(room.slug)}
+        initialMessages={messages.map((m) => ({
+          id: m.id,
+          content: m.content,
+          createdAt: m.createdAt.toISOString(),
+          deletedAt: m.deletedAt?.toISOString() ?? null,
+          author: m.author,
+        }))}
+        currentUserId={user.id}
+        canModerate={canModerate}
+      />
     </ChatChannelProvider>
   );
 }
