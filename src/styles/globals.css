@@ -1161,6 +1161,283 @@ button:hover .rul-mark {
   line-height: 1.5;
 }
 
+/* ---------- Page head (list pages) ---------- */
+.page-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 28px;
+}
+.page-head .sub {
+  color: var(--text-2);
+  font-size: 14px;
+  max-width: 520px;
+  line-height: 1.55;
+}
+.page-head h1 {
+  font-family: var(--font-display);
+  font-size: clamp(28px, 3.6vw, 40px);
+  letter-spacing: -0.02em;
+  line-height: 1.02;
+  margin: 6px 0 0;
+}
+
+/* ---------- Status chips ---------- */
+.status-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 9px;
+  border-radius: 999px;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-2);
+}
+.status-chip::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--text-3);
+}
+.status-chip[data-status="open"] {
+  color: color-mix(in srgb, var(--uno-green) 70%, var(--text));
+  border-color: color-mix(in srgb, var(--uno-green) 35%, var(--border));
+  background: color-mix(in srgb, var(--uno-green) 10%, var(--surface));
+}
+.status-chip[data-status="open"]::before {
+  background: var(--uno-green);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--uno-green) 22%, transparent);
+  animation: pulse 2s infinite;
+}
+.status-chip[data-status="closed"] {
+  color: var(--text-3);
+}
+
+/* ---------- Polls ---------- */
+.poll-list {
+  display: grid;
+  gap: 12px;
+}
+.poll-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 18px 20px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--surface);
+  transition:
+    border-color 0.2s ease,
+    transform 0.3s cubic-bezier(0.2, 0.8, 0.3, 1),
+    background 0.2s ease;
+}
+.poll-row:hover {
+  border-color: var(--border-strong);
+  transform: translateY(-1px);
+  background: var(--surface-2);
+}
+.poll-row-main {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.poll-row-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.poll-row-title h3 {
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--text);
+  margin: 0;
+}
+.poll-row-meta {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  color: var(--text-3);
+}
+.poll-row-arrow {
+  color: var(--text-3);
+  transition:
+    transform 0.2s ease,
+    color 0.2s ease;
+}
+.poll-row:hover .poll-row-arrow {
+  color: var(--text);
+  transform: translateX(2px);
+}
+
+/* Poll options (detail page) */
+.poll-options {
+  display: grid;
+  gap: 10px;
+}
+.poll-option {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  width: 100%;
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+  overflow: hidden;
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    transform 0.25s cubic-bezier(0.2, 0.8, 0.3, 1),
+    background 0.2s ease;
+}
+.poll-option::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: var(--pct, 0%);
+  background: color-mix(in srgb, var(--uno-blue) 14%, var(--surface-2));
+  z-index: 0;
+  transition: width 0.6s cubic-bezier(0.2, 0.8, 0.3, 1);
+}
+.poll-option > * {
+  position: relative;
+  z-index: 1;
+}
+.poll-option:not([disabled]):hover {
+  border-color: var(--border-strong);
+  transform: translateY(-1px);
+  background: var(--surface-2);
+}
+.poll-option[aria-pressed="true"] {
+  border-color: color-mix(in srgb, var(--uno-blue) 55%, var(--border));
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--uno-blue) 18%, transparent);
+}
+.poll-option[aria-pressed="true"]::before {
+  background: color-mix(in srgb, var(--uno-blue) 22%, var(--surface-2));
+}
+.poll-option[disabled] {
+  cursor: default;
+  opacity: 0.88;
+}
+.poll-option-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.poll-option-count {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  color: var(--text-2);
+  white-space: nowrap;
+  letter-spacing: 0.02em;
+}
+
+/* Callout (notes under vote list, etc.) */
+.callout {
+  border: 1px dashed var(--border);
+  border-radius: 12px;
+  padding: 14px 16px;
+  font-size: 13px;
+  color: var(--text-2);
+  background: color-mix(in srgb, var(--surface) 60%, transparent);
+}
+.callout a {
+  color: var(--text);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* ---------- Form fields ---------- */
+.form-stack {
+  display: grid;
+  gap: 22px;
+}
+.form-field {
+  display: grid;
+  gap: 8px;
+}
+.form-field > label,
+.field-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--text-3);
+}
+.form-help {
+  font-size: 12px;
+  color: var(--text-3);
+}
+.form-field-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.form-input,
+.form-textarea {
+  width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 14px;
+  font-family: var(--font-sans);
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+.form-input::placeholder,
+.form-textarea::placeholder {
+  color: var(--text-3);
+}
+.form-input:focus,
+.form-textarea:focus {
+  outline: none;
+  border-color: color-mix(in srgb, var(--uno-blue) 55%, var(--border));
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--uno-blue) 18%, transparent);
+}
+.form-textarea {
+  min-height: 80px;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+/* ---------- Back link ---------- */
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--text-3);
+  margin-bottom: 18px;
+  transition: color 0.15s ease;
+}
+.back-link:hover {
+  color: var(--text);
+}
+
 /* ---------- Page transitions ---------- */
 .page-enter {
   animation: page-in 0.4s cubic-bezier(0.2, 0.7, 0.2, 1) both;

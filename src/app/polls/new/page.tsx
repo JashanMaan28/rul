@@ -1,11 +1,10 @@
-import { notFound } from "next/navigation";
 import Link from "next/link";
+import { notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { getCurrentUser } from "~/lib/user";
 import { can } from "~/lib/roles";
+import { Eyebrow, Section } from "~/components/primitives";
 import { NewPollForm } from "./form";
-import { buttonVariants } from "~/components/ui/button";
-import { cn } from "~/lib/utils";
 
 export const metadata = {
   title: "New poll",
@@ -16,20 +15,24 @@ export default async function NewPollPage() {
   if (!user || !can(user.roles, "create_polls")) notFound();
 
   return (
-    <section className="mx-auto w-full max-w-xl px-4 py-12 sm:px-6">
-      <Link
-        href="/polls"
-        className={cn(buttonVariants({ variant: "ghost", size: "sm" }), "mb-4")}
-      >
-        <ArrowLeft className="mr-1 size-4" />
-        Back to polls
-      </Link>
-      <h1 className="text-3xl font-bold tracking-tight">Spin up a poll</h1>
-      <p className="text-muted-foreground mb-6 text-sm">
-        Keep options short. Members vote once; they can change their pick until
-        you close it.
-      </p>
-      <NewPollForm />
-    </section>
+    <Section accent="blue">
+      <div className="container-page" style={{ maxWidth: 640 }}>
+        <Link href="/polls" className="back-link">
+          <ArrowLeft size={12} />
+          Back to polls
+        </Link>
+        <div className="page-head" style={{ marginBottom: 22 }}>
+          <div>
+            <Eyebrow>New poll</Eyebrow>
+            <h1>Spin up a poll.</h1>
+            <p className="sub" style={{ marginTop: 10 }}>
+              Keep options short. Members vote once and can&apos;t change their
+              pick.
+            </p>
+          </div>
+        </div>
+        <NewPollForm />
+      </div>
+    </Section>
   );
 }

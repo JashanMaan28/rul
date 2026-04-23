@@ -2,7 +2,6 @@
 
 import { useTransition } from "react";
 import { toast } from "sonner";
-import { Button } from "~/components/ui/button";
 import { closePoll, reopenPoll } from "../_actions";
 
 export function PollAdminControls({
@@ -31,13 +30,13 @@ export function PollAdminControls({
   }
 
   return (
-    <Button
-      variant={isClosed ? "default" : "outline"}
-      size="sm"
+    <button
+      type="button"
       onClick={onClick}
       disabled={pending}
+      className={isClosed ? "btn btn-primary btn-sm" : "btn btn-ghost btn-sm"}
     >
       {pending ? "Saving…" : isClosed ? "Reopen poll" : "Close poll"}
-    </Button>
+    </button>
   );
 }

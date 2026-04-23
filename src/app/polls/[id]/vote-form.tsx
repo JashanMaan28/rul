@@ -1,11 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { useTransition } from "react";
+import { useTransition, type CSSProperties } from "react";
 import { Check } from "lucide-react";
 import { toast } from "sonner";
-import { Progress } from "~/components/ui/progress";
-import { cn } from "~/lib/utils";
 import { castVote } from "../_actions";
 
 type Option = { id: string; label: string; votes: number };
@@ -31,7 +29,7 @@ export function VoteForm({
   const hasVoted = !!myVote;
 
   function onSelect(optionId: string) {
-    if (disabled || pending || hasVoted) return;
+    if (disabled || pending || hasVoted || !signedIn) return;
     const option = options.find((o) => o.id === optionId);
     const ok = window.confirm(
       `Vote for "${option?.label ?? "this option"}"?\n\nVotes are final — you won't be able to change or remove it later.`,
@@ -47,101 +45,84 @@ export function VoteForm({
     });
   }
 
-  if (!signedIn) {
-    return (
-      <div className="space-y-4">
-        {options.map((opt) => (
-          <OptionRow
-            key={opt.id}
-            option={opt}
-            totalVotes={totalVotes}
-            showBar
-          />
-        ))}
-        <div className="text-muted-foreground rounded-lg border border-dashed p-4 text-center text-sm">
-          <Link href="/sign-in" className="underline">
-            Sign in
-          </Link>{" "}
-          to cast a vote.
-        </div>
-      </div>
-    );
-  }
+  const locked = disabled || hasVoted || !signedIn;
 
   return (
-    <div className="space-y-3">
-      {options.map((opt) => {
-        const picked = opt.id === myVote;
-        const locked = disabled || hasVoted;
-        return (
-          <button
-            key={opt.id}
-            type="button"
-            onClick={() => onSelect(opt.id)}
-            disabled={locked || pending}
-            className={cn(
-              "bg-card flex w-full flex-col gap-2 rounded-xl border p-4 text-left transition-all",
-              !locked && "hover:-translate-y-0.5 hover:shadow-md",
-              picked &&
-                "border-[color:var(--uno-blue)] ring-2 ring-[color:var(--uno-blue)]/40",
-              locked && "opacity-80",
-            )}
-            aria-pressed={picked}
-          >
-            <OptionRow
-              option={opt}
-              totalVotes={totalVotes}
-              picked={picked}
-              showBar
-            />
-          </button>
-        );
-      })}
-      {disabled ? (
-        <p className="text-muted-foreground text-center text-xs">
-          Voting is closed. Results are final.
-        </p>
-      ) : hasVoted ? (
-        <p className="text-muted-foreground text-center text-xs">
-          Your vote is locked in. Votes can&apos;t be changed once submitted.
-        </p>
-      ) : (
-        <p className="text-muted-foreground text-center text-xs">
-          Tap an option to vote. Votes are final — you can&apos;t change them
-          later.
-        </p>
-      )}
+    <div>
+      <div className="poll-options">
+        {options.map((opt) => {
+          const pct =
+            totalVotes > 0 ? Math.round((opt.votes / totalVotes) * 100) : 0;
+          const picked = opt.id === myVote;
+          const style: CSSProperties = {
+            ["--pct" as string]: `${pct}%`,
+          };
+          return (
+            <button
+              key={opt.id}
+              type="button"
+              onClick={() => onSelect(opt.id)}
+              disabled={locked || pending}
+              className="poll-option"
+              style={style}
+              aria-pressed={picked}
+            >
+              <span className="poll-option-label">
+                {picked ? (
+                  <Check
+                    size={16}
+                    style={{ color: "var(--uno-blue)", flexShrink: 0 }}
+                  />
+                ) : null}
+                <span
+                  style={{
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                  }}
+                >
+                  {opt.label}
+                </span>
+              </span>
+              <span className="poll-option-count">
+                {opt.votes} · {pct}%
+              </span>
+            </button>
+          );
+        })}
+      </div>
+
+      <p
+        style={{
+          marginTop: 16,
+          fontFamily: "var(--font-mono)",
+          fontSize: 11,
+          color: "var(--text-3)",
+          textAlign: "center",
+          letterSpacing: "0.04em",
+        }}
+      >
+        {!signedIn ? (
+          <>
+            <Link
+              href="/sign-in"
+              style={{
+                color: "var(--text)",
+                textDecoration: "underline",
+                textUnderlineOffset: 2,
+              }}
+            >
+              Sign in
+            </Link>{" "}
+            to cast a vote.
+          </>
+        ) : disabled ? (
+          "Voting is closed. Results are final."
+        ) : hasVoted ? (
+          "Your vote is locked in. Votes can't be changed once submitted."
+        ) : (
+          "Tap an option to vote. Votes are final — you can't change them later."
+        )}
+      </p>
     </div>
-  );
-}
-
-function OptionRow({
-  option,
-  totalVotes,
-  picked,
-  showBar,
-}: {
-  option: Option;
-  totalVotes: number;
-  picked?: boolean;
-  showBar?: boolean;
-}) {
-  const pct =
-    totalVotes > 0 ? Math.round((option.votes / totalVotes) * 100) : 0;
-  return (
-    <>
-      <div className="flex w-full items-center justify-between gap-3">
-        <span className="flex items-center gap-2 font-medium">
-          {picked ? (
-            <Check className="size-4 text-[color:var(--uno-blue)]" />
-          ) : null}
-          {option.label}
-        </span>
-        <span className="text-muted-foreground text-sm tabular-nums">
-          {option.votes} · {pct}%
-        </span>
-      </div>
-      {showBar ? <Progress value={pct} className="h-2" /> : null}
-    </>
   );
 }

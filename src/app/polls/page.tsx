@@ -1,12 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Vote as VoteIcon, Plus } from "lucide-react";
+import { Plus, Vote as VoteIcon } from "lucide-react";
 import { db } from "~/server/db";
 import { getCurrentUser } from "~/lib/user";
 import { can } from "~/lib/roles";
-import { buttonVariants } from "~/components/ui/button";
-import { Badge } from "~/components/ui/badge";
-import { cn } from "~/lib/utils";
+import { Eyebrow, Reveal, Section } from "~/components/primitives";
 
 export const metadata: Metadata = {
   title: "Vote",
@@ -28,79 +26,93 @@ export default async function PollsPage() {
     },
   });
 
-  return (
-    <section className="mx-auto w-full max-w-4xl px-4 py-12 sm:px-6">
-      <div className="mb-8 flex flex-wrap items-end justify-between gap-3">
-        <div className="space-y-1">
-          <div className="text-muted-foreground text-sm font-medium tracking-widest uppercase">
-            Vote on the future
-          </div>
-          <h1 className="text-3xl font-bold tracking-tight">
-            Polls from your officers
-          </h1>
-          <p className="text-muted-foreground text-sm">
-            One vote per poll. Change your mind anytime before it closes.
-          </p>
-        </div>
-        {canCreate ? (
-          <Link
-            href="/polls/new"
-            className={cn(buttonVariants({ size: "sm" }))}
-          >
-            <Plus className="size-4" />
-            New poll
-          </Link>
-        ) : null}
-      </div>
+  const openCount = polls.filter((p) => !p.isClosed).length;
 
-      {polls.length === 0 ? (
-        <div className="bg-muted/30 rounded-2xl border border-dashed p-12 text-center">
-          <VoteIcon className="text-muted-foreground mx-auto size-10" />
-          <p className="mt-3 font-medium">No polls yet.</p>
-          <p className="text-muted-foreground text-sm">
-            {canCreate
-              ? "You can spin up the first one."
-              : "Check back once officers post one."}
-          </p>
+  return (
+    <Section accent="red">
+      <div className="container-page">
+        <div className="page-head">
+          <div>
+            <Eyebrow>Vote on the future</Eyebrow>
+            <h1>Officer polls.</h1>
+            <p className="sub" style={{ marginTop: 10 }}>
+              One vote per poll. Votes are final once cast. {openCount} open
+              right now.
+            </p>
+          </div>
+          {canCreate ? (
+            <Link href="/polls/new" className="btn btn-primary btn-sm">
+              <Plus size={14} />
+              New poll
+            </Link>
+          ) : null}
         </div>
-      ) : (
-        <ul className="space-y-3">
-          {polls.map((poll) => (
-            <li key={poll.id}>
-              <Link
-                href={`/polls/${poll.id}`}
-                className="group bg-card flex items-start justify-between gap-4 rounded-2xl border p-5 transition-all hover:-translate-y-0.5 hover:shadow-md"
-              >
-                <div className="min-w-0 space-y-1">
-                  <div className="flex items-center gap-2">
-                    <h2 className="truncate text-lg font-semibold group-hover:underline">
-                      {poll.title}
-                    </h2>
-                    {poll.isClosed ? (
-                      <Badge variant="secondary">Closed</Badge>
-                    ) : (
-                      <Badge
-                        variant="default"
-                        className="bg-[color:var(--uno-green)]"
-                      >
-                        Open
-                      </Badge>
-                    )}
-                  </div>
-                  <p className="text-muted-foreground text-sm">
-                    by {poll.createdBy.displayName} · {poll._count.votes} vote
-                    {poll._count.votes === 1 ? "" : "s"}
-                    {poll.closesAt
-                      ? ` · closes ${poll.closesAt.toLocaleDateString()}`
-                      : ""}
-                  </p>
-                </div>
-                <span className="text-muted-foreground text-sm">→</span>
-              </Link>
-            </li>
-          ))}
-        </ul>
-      )}
-    </section>
+
+        {polls.length === 0 ? (
+          <div
+            className="callout"
+            style={{
+              textAlign: "center",
+              padding: "48px 24px",
+              borderStyle: "dashed",
+            }}
+          >
+            <VoteIcon
+              size={28}
+              style={{
+                color: "var(--text-3)",
+                display: "block",
+                margin: "0 auto 10px",
+              }}
+            />
+            <div style={{ fontWeight: 600, color: "var(--text)" }}>
+              No polls yet.
+            </div>
+            <div style={{ marginTop: 4 }}>
+              {canCreate
+                ? "You can spin up the first one."
+                : "Check back once officers post one."}
+            </div>
+          </div>
+        ) : (
+          <Reveal as="ul" className="poll-list" stagger>
+            {polls.map((poll) => {
+              const status = poll.isClosed ? "closed" : "open";
+              const voteLabel = `${poll._count.votes} vote${
+                poll._count.votes === 1 ? "" : "s"
+              }`;
+              const closesLabel = poll.closesAt
+                ? ` · closes ${poll.closesAt.toLocaleDateString()}`
+                : "";
+              return (
+                <li key={poll.id}>
+                  <Link
+                    href={`/polls/${poll.id}`}
+                    className="poll-row"
+                    style={{ textDecoration: "none" }}
+                  >
+                    <div className="poll-row-main">
+                      <div className="poll-row-title">
+                        <h3>{poll.title}</h3>
+                        <span className="status-chip" data-status={status}>
+                          {status}
+                        </span>
+                      </div>
+                      <div className="poll-row-meta">
+                        by {poll.createdBy.displayName} · {voteLabel}
+                        {closesLabel}
+                      </div>
+                    </div>
+                    <span className="poll-row-arrow" aria-hidden>
+                      →
+                    </span>
+                  </Link>
+                </li>
+              );
+            })}
+          </Reveal>
+        )}
+      </div>
+    </Section>
   );
 }
