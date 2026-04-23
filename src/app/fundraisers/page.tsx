@@ -1,13 +1,11 @@
 import type { Metadata } from "next";
+import type { CSSProperties } from "react";
 import Link from "next/link";
 import { HandCoins, Plus } from "lucide-react";
 import { db } from "~/server/db";
 import { getCurrentUser } from "~/lib/user";
 import { can } from "~/lib/roles";
-import { buttonVariants } from "~/components/ui/button";
-import { Badge } from "~/components/ui/badge";
-import { Progress } from "~/components/ui/progress";
-import { cn } from "~/lib/utils";
+import { Eyebrow, Reveal, Section } from "~/components/primitives";
 
 export const metadata: Metadata = {
   title: "Fundraisers",
@@ -32,99 +30,114 @@ export default async function FundraisersPage() {
     include: { createdBy: { select: { displayName: true } } },
   });
 
+  const liveCount = fundraisers.filter((f) => !f.isClosed).length;
+
   return (
-    <section className="mx-auto w-full max-w-4xl px-4 py-12 sm:px-6">
-      <div className="mb-8 flex flex-wrap items-end justify-between gap-3">
-        <div className="space-y-1">
-          <div className="text-muted-foreground text-sm font-medium tracking-widest uppercase">
-            Support the club
+    <Section accent="yellow">
+      <div className="container-page">
+        <div className="page-head">
+          <div>
+            <Eyebrow>Support the club</Eyebrow>
+            <h1>Fundraisers.</h1>
+            <p className="sub" style={{ marginTop: 10 }}>
+              Ongoing campaigns for prizes, cards, and club events.{" "}
+              {liveCount} live right now.
+            </p>
           </div>
-          <h1 className="text-3xl font-bold tracking-tight">Fundraisers</h1>
-          <p className="text-muted-foreground text-sm">
-            Ongoing campaigns raising money for prizes, cards, and club events.
-          </p>
+          {canManage ? (
+            <Link href="/fundraisers/new" className="btn btn-primary btn-sm">
+              <Plus size={14} />
+              New fundraiser
+            </Link>
+          ) : null}
         </div>
-        {canManage ? (
-          <Link
-            href="/fundraisers/new"
-            className={cn(buttonVariants({ size: "sm" }))}
-          >
-            <Plus className="size-4" />
-            New fundraiser
-          </Link>
-        ) : null}
-      </div>
 
-      {fundraisers.length === 0 ? (
-        <div className="bg-muted/30 rounded-2xl border border-dashed p-12 text-center">
-          <HandCoins className="text-muted-foreground mx-auto size-10" />
-          <p className="mt-3 font-medium">No fundraisers yet.</p>
-          <p className="text-muted-foreground text-sm">
-            {canManage
-              ? "You can spin up the first one."
-              : "Check back once officers launch one."}
-          </p>
-        </div>
-      ) : (
-        <ul className="grid gap-3 sm:grid-cols-2">
-          {fundraisers.map((f) => {
-            const raised = f.raisedCents;
-            const goal = f.goalCents;
-            const pct =
-              goal && goal > 0
-                ? Math.min(100, Math.round((raised / goal) * 100))
-                : null;
+        {fundraisers.length === 0 ? (
+          <div className="empty-state">
+            <HandCoins size={28} className="empty-state-icon" />
+            <div className="empty-state-title">No fundraisers yet.</div>
+            <div className="empty-state-sub">
+              {canManage
+                ? "You can spin up the first one."
+                : "Check back once officers launch one."}
+            </div>
+          </div>
+        ) : (
+          <Reveal as="ul" className="fund-grid" stagger>
+            {fundraisers.map((f) => {
+              const raised = f.raisedCents;
+              const goal = f.goalCents;
+              const pct =
+                goal && goal > 0
+                  ? Math.min(100, Math.round((raised / goal) * 100))
+                  : null;
+              const status = f.isClosed ? "closed" : "open";
+              const railStyle: CSSProperties = {
+                ["--pct" as string]: `${pct ?? 0}%`,
+              };
 
-            return (
-              <li key={f.id}>
-                <Link
-                  href={`/fundraisers/${f.id}`}
-                  className="group bg-card block h-full rounded-2xl border p-5 transition-all hover:-translate-y-0.5 hover:shadow-md"
-                >
-                  <div className="flex items-start justify-between gap-2">
-                    <h2 className="font-semibold group-hover:underline">
-                      {f.title}
-                    </h2>
-                    {f.isClosed ? (
-                      <Badge variant="secondary">Closed</Badge>
-                    ) : (
-                      <Badge
-                        variant="default"
-                        className="bg-[color:var(--uno-green)]"
-                      >
-                        Live
-                      </Badge>
-                    )}
-                  </div>
-                  <p className="text-muted-foreground mt-1 line-clamp-2 text-sm">
-                    {f.description}
-                  </p>
-
-                  <div className="mt-4 space-y-1.5">
-                    <div className="flex items-baseline justify-between text-sm">
-                      <span className="font-semibold">
-                        {dollars.format(raised / 100)}
+              return (
+                <li key={f.id}>
+                  <Link
+                    href={`/fundraisers/${f.id}`}
+                    className="fund-card"
+                    data-closed={f.isClosed}
+                    style={{ textDecoration: "none" }}
+                  >
+                    <div className="fund-card-head">
+                      <h3 className="fund-card-title">{f.title}</h3>
+                      <span className="status-chip" data-status={status}>
+                        {f.isClosed ? "closed" : "live"}
                       </span>
-                      {goal ? (
-                        <span className="text-muted-foreground">
-                          of {dollars.format(goal / 100)}
-                        </span>
-                      ) : (
-                        <span className="text-muted-foreground">raised</span>
-                      )}
                     </div>
-                    {pct !== null ? <Progress value={pct} /> : null}
-                  </div>
+                    <p className="fund-card-desc">{f.description}</p>
 
-                  <p className="text-muted-foreground mt-3 text-xs">
-                    by {f.createdBy.displayName}
-                  </p>
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
-      )}
-    </section>
+                    <div style={{ display: "grid", gap: 8 }}>
+                      <div className="money-readout">
+                        <span
+                          style={{
+                            fontFamily: "var(--font-display)",
+                            fontSize: 22,
+                            letterSpacing: "-0.02em",
+                            color: "var(--text)",
+                          }}
+                        >
+                          {dollars.format(raised / 100)}
+                        </span>
+                        <span
+                          style={{
+                            fontFamily: "var(--font-mono)",
+                            fontSize: 11,
+                            color: "var(--text-3)",
+                            letterSpacing: "0.04em",
+                          }}
+                        >
+                          {goal
+                            ? `of ${dollars.format(goal / 100)}${pct !== null ? ` · ${pct}%` : ""}`
+                            : "raised"}
+                        </span>
+                      </div>
+                      {pct !== null ? (
+                        <div
+                          className="progress-rail"
+                          data-closed={f.isClosed}
+                          style={railStyle}
+                        >
+                          <div className="progress-rail-fill" />
+                        </div>
+                      ) : null}
+                    </div>
+
+                    <div className="fund-card-footer">
+                      by {f.createdBy.displayName}
+                    </div>
+                  </Link>
+                </li>
+              );
+            })}
+          </Reveal>
+        )}
+      </div>
+    </Section>
   );
 }

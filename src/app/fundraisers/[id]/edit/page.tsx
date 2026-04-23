@@ -4,9 +4,8 @@ import { ArrowLeft } from "lucide-react";
 import { db } from "~/server/db";
 import { getCurrentUser } from "~/lib/user";
 import { can } from "~/lib/roles";
+import { Eyebrow, Section } from "~/components/primitives";
 import { FundraiserForm } from "../../_form";
-import { buttonVariants } from "~/components/ui/button";
-import { cn } from "~/lib/utils";
 
 export const metadata = { title: "Edit fundraiser" };
 
@@ -29,32 +28,36 @@ export default async function EditFundraiserPage({
   if (!fundraiser) notFound();
 
   return (
-    <section className="mx-auto w-full max-w-xl px-4 py-12 sm:px-6">
-      <Link
-        href={`/fundraisers/${fundraiser.id}`}
-        className={cn(buttonVariants({ variant: "ghost", size: "sm" }), "mb-4")}
-      >
-        <ArrowLeft className="mr-1 size-4" />
-        Cancel
-      </Link>
-      <h1 className="text-3xl font-bold tracking-tight">Edit fundraiser</h1>
-      <p className="text-muted-foreground mb-6 text-sm">
-        Changes are live immediately.
-      </p>
-      <FundraiserForm
-        mode="edit"
-        fundraiserId={fundraiser.id}
-        defaults={{
-          title: fundraiser.title,
-          description: fundraiser.description,
-          goalDollars:
-            fundraiser.goalCents != null
-              ? String(fundraiser.goalCents / 100)
-              : "",
-          startsAt: toDatetimeLocal(fundraiser.startsAt),
-          endsAt: toDatetimeLocal(fundraiser.endsAt),
-        }}
-      />
-    </section>
+    <Section accent="yellow">
+      <div className="container-page" style={{ maxWidth: 720 }}>
+        <Link href={`/fundraisers/${fundraiser.id}`} className="back-link">
+          <ArrowLeft size={12} />
+          Cancel
+        </Link>
+        <div className="page-head" style={{ marginBottom: 22 }}>
+          <div>
+            <Eyebrow>Edit fundraiser</Eyebrow>
+            <h1>{fundraiser.title}</h1>
+            <p className="sub" style={{ marginTop: 10 }}>
+              Changes are live immediately.
+            </p>
+          </div>
+        </div>
+        <FundraiserForm
+          mode="edit"
+          fundraiserId={fundraiser.id}
+          defaults={{
+            title: fundraiser.title,
+            description: fundraiser.description,
+            goalDollars:
+              fundraiser.goalCents != null
+                ? String(fundraiser.goalCents / 100)
+                : "",
+            startsAt: toDatetimeLocal(fundraiser.startsAt),
+            endsAt: toDatetimeLocal(fundraiser.endsAt),
+          }}
+        />
+      </div>
+    </Section>
   );
 }

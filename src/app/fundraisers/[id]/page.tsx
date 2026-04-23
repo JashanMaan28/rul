@@ -1,20 +1,24 @@
 import type { Metadata } from "next";
+import type { CSSProperties } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, Pencil } from "lucide-react";
 import { db } from "~/server/db";
 import { getCurrentUser } from "~/lib/user";
 import { can } from "~/lib/roles";
-import { Badge } from "~/components/ui/badge";
-import { Progress } from "~/components/ui/progress";
-import { buttonVariants } from "~/components/ui/button";
-import { cn } from "~/lib/utils";
+import { Eyebrow, Reveal, Section } from "~/components/primitives";
 import { RaisedControls } from "./raised-controls";
 
 const dollars = new Intl.NumberFormat("en-US", {
   style: "currency",
   currency: "USD",
   maximumFractionDigits: 0,
+});
+
+const dateFmt = new Intl.DateTimeFormat("en-US", {
+  month: "long",
+  day: "numeric",
+  year: "numeric",
 });
 
 export async function generateMetadata({
@@ -52,94 +56,109 @@ export default async function FundraiserDetailPage({
   const goal = fundraiser.goalCents;
   const pct =
     goal && goal > 0 ? Math.min(100, Math.round((raised / goal) * 100)) : null;
+  const status = fundraiser.isClosed ? "closed" : "open";
+  const railStyle: CSSProperties = {
+    ["--pct" as string]: `${pct ?? 0}%`,
+  };
 
   return (
-    <section className="mx-auto w-full max-w-2xl px-4 py-12 sm:px-6">
-      <Link
-        href="/fundraisers"
-        className={cn(buttonVariants({ variant: "ghost", size: "sm" }), "mb-4")}
-      >
-        <ArrowLeft className="mr-1 size-4" />
-        All fundraisers
-      </Link>
+    <Section accent="yellow">
+      <article className="container-page" style={{ maxWidth: 760 }}>
+        <Link href="/fundraisers" className="back-link">
+          <ArrowLeft size={12} />
+          All fundraisers
+        </Link>
 
-      <div className="flex flex-wrap items-start justify-between gap-3">
-        <div className="space-y-1">
-          <div className="flex items-center gap-2">
-            <h1 className="text-3xl font-bold tracking-tight">
-              {fundraiser.title}
-            </h1>
-            {fundraiser.isClosed ? (
-              <Badge variant="secondary">Closed</Badge>
-            ) : (
-              <Badge variant="default" className="bg-[color:var(--uno-green)]">
-                Live
-              </Badge>
-            )}
+        <div className="page-head">
+          <div>
+            <Eyebrow>Fundraiser</Eyebrow>
+            <h1>{fundraiser.title}</h1>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 10,
+                marginTop: 14,
+                flexWrap: "wrap",
+              }}
+            >
+              <span className="status-chip" data-status={status}>
+                {fundraiser.isClosed ? "closed" : "live"}
+              </span>
+              <span
+                style={{
+                  fontFamily: "var(--font-mono)",
+                  fontSize: 11,
+                  color: "var(--text-3)",
+                  letterSpacing: "0.02em",
+                }}
+              >
+                by {fundraiser.createdBy.displayName}
+              </span>
+            </div>
           </div>
-          <p className="text-muted-foreground text-sm">
-            by {fundraiser.createdBy.displayName}
-          </p>
+          {canManage ? (
+            <div className="action-row">
+              <Link
+                href={`/fundraisers/${fundraiser.id}/edit`}
+                className="btn btn-ghost btn-sm"
+              >
+                <Pencil size={14} />
+                Edit
+              </Link>
+            </div>
+          ) : null}
         </div>
-        {canManage ? (
-          <Link
-            href={`/fundraisers/${fundraiser.id}/edit`}
-            className={cn(buttonVariants({ variant: "outline", size: "sm" }))}
-          >
-            <Pencil className="mr-1 size-4" />
-            Edit
-          </Link>
-        ) : null}
-      </div>
 
-      <div className="bg-card mt-8 rounded-2xl border p-6">
-        <div className="flex items-baseline justify-between">
-          <span className="text-3xl font-bold">
-            {dollars.format(raised / 100)}
-          </span>
-          {goal ? (
-            <span className="text-muted-foreground text-sm">
-              of {dollars.format(goal / 100)} goal
-            </span>
-          ) : (
-            <span className="text-muted-foreground text-sm">raised</span>
-          )}
-        </div>
-        {pct !== null ? (
-          <div className="mt-3">
-            <Progress value={pct} />
-            <p className="text-muted-foreground mt-1 text-xs">{pct}% there</p>
+        <Reveal as="div" stagger style={{ display: "grid", gap: 14 }}>
+          <div className="money-card">
+            <div className="money-readout">
+              <span className="money-readout-raised">
+                {dollars.format(raised / 100)}
+              </span>
+              <span className="money-readout-goal">
+                {goal ? `of ${dollars.format(goal / 100)} goal` : "raised"}
+              </span>
+            </div>
+            {pct !== null ? (
+              <>
+                <div
+                  className="progress-rail progress-rail--tall"
+                  data-closed={fundraiser.isClosed}
+                  style={railStyle}
+                >
+                  <div className="progress-rail-fill" />
+                </div>
+                <span className="progress-hint">{pct}% there</span>
+              </>
+            ) : null}
           </div>
-        ) : null}
-      </div>
 
-      <div className="bg-card mt-6 rounded-2xl border p-6">
-        <h2 className="text-muted-foreground mb-2 text-sm font-semibold tracking-widest uppercase">
-          About
-        </h2>
-        <p className="text-sm leading-relaxed whitespace-pre-wrap">
-          {fundraiser.description}
-        </p>
-        {fundraiser.startsAt || fundraiser.endsAt ? (
-          <p className="text-muted-foreground mt-4 text-xs">
-            {fundraiser.startsAt
-              ? `Started ${fundraiser.startsAt.toLocaleDateString()}`
-              : null}
-            {fundraiser.startsAt && fundraiser.endsAt ? " · " : null}
-            {fundraiser.endsAt
-              ? `Ends ${fundraiser.endsAt.toLocaleDateString()}`
-              : null}
-          </p>
-        ) : null}
-      </div>
+          <div className="about-card">
+            <h2>About</h2>
+            <p>{fundraiser.description}</p>
+            {fundraiser.startsAt || fundraiser.endsAt ? (
+              <div className="dates">
+                {fundraiser.startsAt
+                  ? `Started ${dateFmt.format(fundraiser.startsAt)}`
+                  : null}
+                {fundraiser.startsAt && fundraiser.endsAt ? " · " : null}
+                {fundraiser.endsAt
+                  ? `Ends ${dateFmt.format(fundraiser.endsAt)}`
+                  : null}
+              </div>
+            ) : null}
+          </div>
 
-      {canManage ? (
-        <RaisedControls
-          id={fundraiser.id}
-          raisedDollars={raised / 100}
-          isClosed={fundraiser.isClosed}
-        />
-      ) : null}
-    </section>
+          {canManage ? (
+            <RaisedControls
+              id={fundraiser.id}
+              raisedDollars={raised / 100}
+              isClosed={fundraiser.isClosed}
+            />
+          ) : null}
+        </Reveal>
+      </article>
+    </Section>
   );
 }

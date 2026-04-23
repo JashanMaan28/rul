@@ -1,10 +1,9 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { unstable_rethrow } from "next/navigation";
+import { Trash2 } from "lucide-react";
 import { toast } from "sonner";
-import { Button } from "~/components/ui/button";
-import { Input } from "~/components/ui/input";
-import { Label } from "~/components/ui/label";
 import {
   closeFundraiser,
   deleteFundraiser,
@@ -33,7 +32,7 @@ export function RaisedControls({
     startTransition(async () => {
       const result = await updateRaised({ id, raisedDollars: n });
       if (result.ok) {
-        toast.success(`Raised amount updated`);
+        toast.success("Raised amount updated");
       } else {
         toast.error(result.error ?? "Couldn't update");
       }
@@ -46,6 +45,7 @@ export function RaisedControls({
         if (isClosed) await reopenFundraiser(id);
         else await closeFundraiser(id);
       } catch (err) {
+        unstable_rethrow(err);
         const message = err instanceof Error ? err.message : "Failed";
         toast.error(message);
       }
@@ -58,6 +58,7 @@ export function RaisedControls({
       try {
         await deleteFundraiser(id);
       } catch (err) {
+        unstable_rethrow(err);
         const message = err instanceof Error ? err.message : "Failed";
         toast.error(message);
       }
@@ -65,15 +66,13 @@ export function RaisedControls({
   }
 
   return (
-    <div className="bg-muted/30 mt-6 rounded-2xl border border-dashed p-5">
-      <h3 className="text-muted-foreground mb-3 text-sm font-semibold tracking-widest uppercase">
-        Officer controls
-      </h3>
+    <div className="officer-panel">
+      <h3>Officer controls</h3>
 
-      <div className="flex flex-wrap items-end gap-3">
-        <div className="min-w-[160px] flex-1 space-y-1.5">
-          <Label htmlFor="raisedDollars">Update raised ($)</Label>
-          <Input
+      <div className="officer-panel-row">
+        <div className="form-field">
+          <label htmlFor="raisedDollars">Update raised ($)</label>
+          <input
             id="raisedDollars"
             type="number"
             inputMode="decimal"
@@ -81,30 +80,37 @@ export function RaisedControls({
             min="0"
             value={value}
             onChange={(e) => setValue(e.target.value)}
+            className="form-input"
           />
         </div>
-        <Button onClick={onSaveRaised} disabled={pending} size="sm">
+        <button
+          type="button"
+          onClick={onSaveRaised}
+          disabled={pending}
+          className="btn btn-primary btn-sm"
+        >
           Save amount
-        </Button>
+        </button>
       </div>
 
-      <div className="mt-4 flex flex-wrap gap-2">
-        <Button
+      <div className="action-row">
+        <button
+          type="button"
           onClick={onToggleClosed}
           disabled={pending}
-          variant="outline"
-          size="sm"
+          className="btn btn-ghost btn-sm"
         >
           {isClosed ? "Reopen" : "Close"}
-        </Button>
-        <Button
+        </button>
+        <button
+          type="button"
           onClick={onDelete}
           disabled={pending}
-          variant="destructive"
-          size="sm"
+          className="btn btn-danger btn-sm"
         >
+          <Trash2 size={14} />
           Delete
-        </Button>
+        </button>
       </div>
     </div>
   );
