@@ -3,15 +3,7 @@ import { notFound } from "next/navigation";
 import { db } from "~/server/db";
 import { getCurrentUser } from "~/lib/user";
 import { can, sortRoles } from "~/lib/roles";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "~/components/ui/table";
-import { Badge } from "~/components/ui/badge";
+import { Eyebrow, Section } from "~/components/primitives";
 import { RolesEditor } from "./roles-editor";
 
 export const metadata: Metadata = {
@@ -24,87 +16,98 @@ export default async function AdminPage() {
   if (!actor || !can(actor.roles, "access_admin")) notFound();
 
   const canManageRoles = can(actor.roles, "manage_roles");
+  const actorTopRole = sortRoles(actor.roles)[0] ?? "MEMBER";
 
   const users = await db.user.findMany({
     orderBy: [{ displayName: "asc" }],
   });
 
   return (
-    <section className="mx-auto w-full max-w-5xl px-4 py-12 sm:px-6">
-      <div className="mb-6 flex flex-col gap-1">
-        <div className="text-muted-foreground text-sm font-medium tracking-widest uppercase">
-          {sortRoles(actor.roles)[0]} console
+    <Section accent="red">
+      <div className="container-page" style={{ maxWidth: 1040 }}>
+        <div className="page-head">
+          <div>
+            <Eyebrow>{actorTopRole} console</Eyebrow>
+            <h1>Role assignments.</h1>
+            <p className="sub" style={{ marginTop: 10 }}>
+              Members can hold multiple roles — effective permissions are the
+              union. Founders and Co-Presidents have identical permissions; the
+              FOUNDER badge is honorary and seeded from{" "}
+              <code
+                style={{
+                  fontFamily: "var(--font-mono)",
+                  fontSize: 12,
+                  padding: "1px 6px",
+                  borderRadius: 6,
+                  background: "var(--surface-2)",
+                  border: "1px solid var(--border)",
+                }}
+              >
+                FOUNDER_EMAILS
+              </code>
+              , not assignable here.
+            </p>
+          </div>
         </div>
-        <h1 className="text-3xl font-bold tracking-tight">Role assignments</h1>
-        <p className="text-muted-foreground text-sm">
-          Members can hold multiple roles — effective permissions are the union.
-          Founders and Co-Presidents have identical permissions; the FOUNDER
-          badge is honorary and is seeded from the <code>FOUNDER_EMAILS</code>{" "}
-          env var, not assignable here.
-        </p>
-      </div>
 
-      <div className="bg-card rounded-2xl border">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Member</TableHead>
-              <TableHead>Email</TableHead>
-              <TableHead>Roles</TableHead>
-              <TableHead className="w-[220px] text-right">Assign</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {users.map((u) => {
-              const isFounder = u.roles.includes("FOUNDER");
-              return (
-                <TableRow key={u.id}>
-                  <TableCell className="font-medium">{u.displayName}</TableCell>
-                  <TableCell className="text-muted-foreground">
-                    {u.email}
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex flex-wrap gap-1">
-                      {sortRoles(u.roles).map((r) => (
-                        <Badge
-                          key={r}
-                          variant={r === "MEMBER" ? "secondary" : "default"}
-                        >
-                          {r}
-                        </Badge>
-                      ))}
-                    </div>
-                  </TableCell>
-                  <TableCell className="text-right">
-                    {isFounder ? (
-                      <span className="text-muted-foreground text-xs">
-                        Seeded via env
-                      </span>
-                    ) : (
-                      <RolesEditor
-                        userId={u.id}
-                        currentRoles={u.roles}
-                        label={u.displayName}
-                        disabled={!canManageRoles}
-                      />
-                    )}
-                  </TableCell>
-                </TableRow>
-              );
-            })}
-            {users.length === 0 ? (
-              <TableRow>
-                <TableCell
-                  colSpan={4}
-                  className="text-muted-foreground py-8 text-center"
-                >
-                  No members yet. Invite officers to sign in.
-                </TableCell>
-              </TableRow>
-            ) : null}
-          </TableBody>
-        </Table>
+        <div className="admin-card">
+          <table className="admin-table">
+            <thead>
+              <tr>
+                <th>Member</th>
+                <th>Email</th>
+                <th>Roles</th>
+                <th className="cell-right" style={{ width: 220 }}>
+                  Assign
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {users.map((u) => {
+                const isFounder = u.roles.includes("FOUNDER");
+                return (
+                  <tr key={u.id}>
+                    <td className="cell-name">{u.displayName}</td>
+                    <td className="cell-note">{u.email}</td>
+                    <td>
+                      <div className="role-chip-row">
+                        {sortRoles(u.roles).map((r) => (
+                          <span
+                            key={r}
+                            className="role-chip"
+                            data-role={r}
+                          >
+                            {r}
+                          </span>
+                        ))}
+                      </div>
+                    </td>
+                    <td className="cell-right">
+                      {isFounder ? (
+                        <span className="cell-note">Seeded via env</span>
+                      ) : (
+                        <RolesEditor
+                          userId={u.id}
+                          currentRoles={u.roles}
+                          label={u.displayName}
+                          disabled={!canManageRoles}
+                        />
+                      )}
+                    </td>
+                  </tr>
+                );
+              })}
+              {users.length === 0 ? (
+                <tr>
+                  <td colSpan={4} className="cell-empty">
+                    No members yet. Invite officers to sign in.
+                  </td>
+                </tr>
+              ) : null}
+            </tbody>
+          </table>
+        </div>
       </div>
-    </section>
+    </Section>
   );
 }

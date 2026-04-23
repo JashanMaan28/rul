@@ -9,7 +9,6 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
-import { Button } from "~/components/ui/button";
 import { ASSIGNABLE_ROLES, ROLE_DESCRIPTIONS } from "~/lib/roles";
 import type { Role } from "../../../generated/prisma";
 import { updateUserRoles } from "./_actions";
@@ -52,18 +51,21 @@ export function RolesEditor({ userId, currentRoles, label, disabled }: Props) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
-        render={
-          <Button
-            variant="outline"
-            size="sm"
-            className="w-[180px] justify-between"
-            disabled={disabled === true || pending}
-          >
-            <span className="truncate">{summary}</span>
-            <ChevronDown className="size-4 opacity-60" />
-          </Button>
-        }
-      />
+        className="btn btn-ghost btn-sm"
+        disabled={disabled === true || pending}
+        style={{ width: 180, justifyContent: "space-between" }}
+      >
+        <span
+          style={{
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
+          }}
+        >
+          {summary}
+        </span>
+        <ChevronDown size={14} style={{ opacity: 0.6, flexShrink: 0 }} />
+      </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-[260px]">
         {ASSIGNABLE_ROLES.map((role) => (
           <DropdownMenuCheckboxItem
