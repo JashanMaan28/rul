@@ -1,34 +1,99 @@
 import Link from "next/link";
-import { RulLogo } from "~/components/brand/rul-logo";
+import { RulMark } from "~/components/brand/rul-mark";
 
 export function Footer() {
+  const year = new Date().getFullYear();
   return (
-    <footer className="border-border/60 bg-background mt-24 border-t">
-      <div className="mx-auto flex w-full max-w-6xl flex-col items-start gap-6 px-4 py-10 sm:px-6 md:flex-row md:items-center md:justify-between">
-        <div className="flex items-center gap-3">
-          <RulLogo size={32} static />
-          <div className="text-sm leading-tight">
-            <div className="font-semibold">Ripon Uno League</div>
-            <div className="text-muted-foreground">
-              Monday–Thursday · 5–8 PM · Kissee&apos;s room
+    <footer className="footer">
+      <div className="container-page">
+        <div className="footer-grid">
+          <div>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 12,
+                marginBottom: 18,
+              }}
+            >
+              <RulMark large />
+              <div>
+                <div
+                  style={{
+                    fontWeight: 600,
+                    fontSize: 14,
+                    letterSpacing: "-0.01em",
+                  }}
+                >
+                  Ripon Uno League
+                </div>
+                <div className="mono faint" style={{ fontSize: 11, marginTop: 2 }}>
+                  Est. 2025 · Room 214
+                </div>
+              </div>
             </div>
+            <p
+              className="muted"
+              style={{ fontSize: 13.5, maxWidth: 280, lineHeight: 1.55 }}
+            >
+              Ripon High School&apos;s official UNO club. Run by students,
+              sanctioned by the school.
+            </p>
+          </div>
+
+          <div>
+            <h5>League</h5>
+            <ul>
+              <li>
+                <Link href="/leaderboard">Leaderboard</Link>
+              </li>
+              <li>
+                <Link href="/polls">Vote</Link>
+              </li>
+              <li>
+                <Link href="/archive">Archive</Link>
+              </li>
+              <li>
+                <Link href="/officers">Officers</Link>
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <h5>Community</h5>
+            <ul>
+              <li>
+                <Link href="/chat">Chat</Link>
+              </li>
+              <li>
+                <Link href="/minutes">Minutes</Link>
+              </li>
+              <li>
+                <Link href="/fundraisers">Fundraisers</Link>
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <h5>Contact</h5>
+            <ul>
+              <li>
+                <span>Room 214 · Mr. Kissee</span>
+              </li>
+              <li>
+                <span>Mon–Thu · 5–8 PM</span>
+              </li>
+              <li>
+                <span>rul@riponhs.edu</span>
+              </li>
+            </ul>
           </div>
         </div>
 
-        <nav className="text-muted-foreground flex flex-wrap gap-x-5 gap-y-2 text-sm">
-          <Link href="/leaderboard" className="hover:text-foreground">
-            Leaderboard
-          </Link>
-          <Link href="/polls" className="hover:text-foreground">
-            Vote
-          </Link>
-          <Link href="/minutes" className="hover:text-foreground">
-            Minutes
-          </Link>
-          <Link href="/officers" className="hover:text-foreground">
-            Officers
-          </Link>
-        </nav>
+        <div className="footer-bottom">
+          <span>© {year} RIPON UNO LEAGUE</span>
+          <span>BUILT IN NEXT.JS · RIPON, CA</span>
+        </div>
       </div>
     </footer>
   );

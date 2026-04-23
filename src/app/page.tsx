@@ -2,280 +2,371 @@ import Link from "next/link";
 import {
   CalendarClock,
   ClipboardList,
-  Medal,
-  NotebookPen,
+  Gift,
+  MessageSquare,
+  Sparkles,
   Trophy,
+  Users,
   Vote,
 } from "lucide-react";
-import { RulLogo } from "~/components/brand/rul-logo";
-import { UnoCard } from "~/components/brand/uno-card";
-import { buttonVariants } from "~/components/ui/button";
+import { Show, SignUpButton } from "@clerk/nextjs";
+import { Hero } from "./_hero";
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "~/components/ui/card";
-import { Badge } from "~/components/ui/badge";
+  CountUp,
+  Eyebrow,
+  MiniCard,
+  Reveal,
+  Section,
+  Spotlight,
+} from "~/components/primitives";
 import { OFFICERS, ROLE_LABEL } from "~/lib/officers";
-import { cn } from "~/lib/utils";
 
-const accentClass = {
-  red: "bg-[color:var(--uno-red)] text-white",
-  yellow: "bg-[color:var(--uno-yellow)] text-[color:var(--uno-ink)]",
-  green: "bg-[color:var(--uno-green)] text-white",
-  blue: "bg-[color:var(--uno-blue)] text-white",
-} as const;
-
-const accentHoverRing = {
-  red: "hover:ring-[color:var(--uno-red)]/40",
-  yellow: "hover:ring-[color:var(--uno-yellow)]/60",
-  green: "hover:ring-[color:var(--uno-green)]/40",
-  blue: "hover:ring-[color:var(--uno-blue)]/40",
-} as const;
+const DAYS = ["Mon", "Tue", "Wed", "Thu"] as const;
 
 export default function HomePage() {
   return (
-    <div className="flex flex-col">
-      <HeroSection />
-      <ScheduleSection />
-      <FeatureGrid />
-      <OfficersSection />
-    </div>
-  );
-}
+    <div className="page-enter">
+      <Hero />
 
-function HeroSection() {
-  return (
-    <section className="relative overflow-hidden">
-      <div
-        className="pointer-events-none absolute inset-0 opacity-[0.18]"
-        style={{
-          background:
-            "radial-gradient(ellipse at 20% 20%, var(--uno-red), transparent 55%), radial-gradient(ellipse at 80% 30%, var(--uno-yellow), transparent 55%), radial-gradient(ellipse at 50% 90%, var(--uno-blue), transparent 60%)",
-        }}
-        aria-hidden
-      />
-      <div className="relative mx-auto flex w-full max-w-6xl flex-col items-center gap-10 px-4 pt-16 pb-20 text-center sm:px-6 md:pt-24">
-        <Badge variant="secondary" className="tracking-widest uppercase">
-          Ripon High · Est. 2026
-        </Badge>
-        <RulLogo size={96} />
-        <div className="flex max-w-3xl flex-col gap-4">
-          <h1 className="text-4xl font-black tracking-tight sm:text-6xl">
-            Ripon&apos;s loudest card game{" "}
-            <span className="text-[color:var(--uno-red)]">gets a league.</span>
-          </h1>
-          <p className="text-muted-foreground text-lg sm:text-xl">
-            Drop by Kissee&apos;s room Monday through Thursday, 5–8 PM. Stack
-            trophies. Take someone out with a +4. Reset monthly for prizes.
-          </p>
-        </div>
-        <div className="flex flex-wrap items-center justify-center gap-3">
-          <Link href="/sign-up" className={cn(buttonVariants({ size: "lg" }))}>
-            Join the league
-          </Link>
-          <Link
-            href="/leaderboard"
-            className={cn(buttonVariants({ size: "lg", variant: "outline" }))}
-          >
-            See the leaderboard
-          </Link>
-        </div>
-        <div className="mt-4 flex items-end justify-center gap-[-1rem] pb-2">
-          <UnoCard color="red" symbol="+4" tilt={-14} className="-mr-4" />
-          <UnoCard color="yellow" symbol="9" tilt={-4} className="z-10 -mr-4" />
-          <UnoCard color="green" symbol="R" tilt={4} className="z-20 -mr-4" />
-          <UnoCard color="blue" symbol="S" tilt={12} className="z-30" />
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function ScheduleSection() {
-  return (
-    <section className="mx-auto w-full max-w-6xl px-4 sm:px-6">
-      <div className="grid gap-4 md:grid-cols-3">
-        <Card className="md:col-span-2">
-          <CardHeader>
-            <div className="text-muted-foreground flex items-center gap-2">
-              <CalendarClock className="size-4" />
-              <span className="text-sm font-medium tracking-wider uppercase">
-                League schedule
-              </span>
+      <Section accent="blue">
+        <div className="container-page">
+          <div className="section-head">
+            <div>
+              <Eyebrow>The League</Eyebrow>
+              <h2 className="heading-2">What the club gives you.</h2>
             </div>
-            <CardTitle className="text-2xl">
-              Mon–Thu · 5–8 PM · Kissee&apos;s room
-            </CardTitle>
-            <CardDescription>
-              Community games count toward silver trophies. Pro sessions count
-              toward gold. Monthly leaderboards reset on the 1st.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-            {["Mon", "Tue", "Wed", "Thu"].map((day) => (
-              <div
-                key={day}
-                className="bg-muted/30 rounded-lg border p-3 text-center"
-              >
-                <div className="text-muted-foreground text-xs tracking-wider uppercase">
-                  {day}
+            <p className="sub muted">
+              Built for players, run by officers. Every feature below is a
+              reason to keep the app open during lunch.
+            </p>
+          </div>
+
+          <Reveal as="div" className="bento" stagger>
+            <Spotlight
+              className="b-card b-span-3 b-row-2"
+              style={{ minHeight: 320 }}
+            >
+              <div className="b-head">
+                <div>
+                  <Eyebrow>Ranked play</Eyebrow>
+                  <div className="b-title" style={{ marginTop: 6 }}>
+                    Two leaderboards, one system
+                  </div>
                 </div>
-                <div className="font-semibold">5 – 8 PM</div>
+                <span className="icon-chip" data-accent="yellow">
+                  <Trophy size={18} />
+                </span>
               </div>
-            ))}
-          </CardContent>
-        </Card>
+              <p className="b-desc" style={{ maxWidth: 320 }}>
+                Every logged game feeds your rank. Community is open to all
+                members; Pro is invite-only and resets each month.
+              </p>
+              <div
+                style={{
+                  display: "flex",
+                  gap: 8,
+                  marginTop: 20,
+                  flexWrap: "wrap",
+                }}
+              >
+                <MiniCard color="red" label="+4" />
+                <MiniCard color="yellow" label="7" />
+                <MiniCard color="green" label="0" />
+                <MiniCard color="blue" label="+2" />
+              </div>
+              <div
+                style={{
+                  marginTop: 24,
+                  fontFamily: "var(--font-mono)",
+                  fontSize: 11,
+                  color: "var(--text-3)",
+                }}
+              >
+                Launch pending — see{" "}
+                <Link
+                  href="/leaderboard"
+                  style={{ color: "var(--text-2)", textDecoration: "underline" }}
+                >
+                  standings
+                </Link>
+              </div>
+            </Spotlight>
 
-        <Card className="ring-2 ring-[color:var(--uno-yellow)]/40">
-          <CardHeader>
-            <div className="text-muted-foreground flex items-center gap-2">
-              <NotebookPen className="size-4" />
-              <span className="text-sm font-medium tracking-wider uppercase">
-                Wednesday ritual
+            <Spotlight className="b-card b-span-3">
+              <div className="b-head">
+                <div>
+                  <Eyebrow>Vote</Eyebrow>
+                  <div className="b-title" style={{ marginTop: 6 }}>
+                    Officers float ideas. Members decide.
+                  </div>
+                </div>
+                <span className="icon-chip" data-accent="red">
+                  <Vote size={18} />
+                </span>
+              </div>
+              <p className="b-desc">
+                Live polls for custom rules, event picks, and gamemode
+                rotations. Winners get built into the next session.
+              </p>
+            </Spotlight>
+
+            <Spotlight className="b-card b-span-3">
+              <div className="b-head">
+                <div>
+                  <Eyebrow>Community chat</Eyebrow>
+                  <div className="b-title" style={{ marginTop: 6 }}>
+                    #general, anytime
+                  </div>
+                </div>
+                <span className="icon-chip" data-accent="blue">
+                  <MessageSquare size={18} />
+                </span>
+              </div>
+              <p className="b-desc">
+                Find a game in minutes. Channels for strategy, rules,
+                brackets, memes — with an officer DM lane for moderation.
+              </p>
+            </Spotlight>
+
+            <Spotlight className="b-card b-span-2">
+              <span className="icon-chip" data-accent="green">
+                <ClipboardList size={18} />
               </span>
-            </div>
-            <CardTitle>Club recap + goals, then UNO</CardTitle>
-            <CardDescription>
-              Wednesdays open with a club recap, immediate goals, and minutes.
-              Then we shuffle and play.
-            </CardDescription>
-          </CardHeader>
-          <CardFooter>
-            <Link
-              href="/minutes"
-              className={cn(buttonVariants({ variant: "ghost", size: "sm" }))}
-            >
-              Read the minutes →
-            </Link>
-          </CardFooter>
-        </Card>
-      </div>
-    </section>
-  );
-}
+              <div className="b-title" style={{ marginTop: 16 }}>
+                Meeting minutes
+              </div>
+              <div className="b-desc">
+                Wednesday recaps, attendance, and club goals — in Markdown.
+              </div>
+            </Spotlight>
 
-function FeatureGrid() {
-  const items = [
-    {
-      href: "/leaderboard",
-      icon: Trophy,
-      label: "Leaderboard",
-      desc: "Top community & pro trophies. Monthly + all-time views.",
-      accent: "red" as const,
-      status: "Launching soon",
-    },
-    {
-      href: "/polls",
-      icon: Vote,
-      label: "Vote on the future",
-      desc: "Officers float ideas, members vote. Winners get built.",
-      accent: "blue" as const,
-      status: "Live · bring opinions",
-    },
-    {
-      href: "/minutes",
-      icon: ClipboardList,
-      label: "Meeting minutes",
-      desc: "Wednesday recaps, attendance, and club goals.",
-      accent: "green" as const,
-      status: "Updated weekly",
-    },
-    {
-      href: "/archive",
-      icon: Medal,
-      label: "Monthly hall of fame",
-      desc: "Past month winners immortalized. Trophies reset, glory doesn't.",
-      accent: "yellow" as const,
-      status: "First snapshot: May 1",
-    },
-  ];
+            <Spotlight className="b-card b-span-2">
+              <span className="icon-chip" data-accent="red">
+                <Gift size={18} />
+              </span>
+              <div className="b-title" style={{ marginTop: 16 }}>
+                Fundraiser wall
+              </div>
+              <div className="b-desc">
+                Student-signed cards fund nationals travel and prize packs.
+              </div>
+            </Spotlight>
 
-  return (
-    <section className="mx-auto w-full max-w-6xl px-4 pt-12 sm:px-6">
-      <div className="mb-6 flex flex-col gap-1">
-        <div className="text-muted-foreground text-sm font-medium tracking-wider uppercase">
-          What lives in the app
+            <Spotlight className="b-card b-span-2">
+              <span className="icon-chip" data-accent="blue">
+                <Users size={18} />
+              </span>
+              <div className="b-title" style={{ marginTop: 16 }}>
+                <CountUp to={40} />+ members
+              </div>
+              <div className="b-desc">
+                Officers, reps, rookies. New this semester:{" "}
+                <CountUp to={22} />.
+              </div>
+            </Spotlight>
+          </Reveal>
         </div>
-        <h2 className="text-3xl font-bold tracking-tight">
-          Everything the club runs on.
-        </h2>
-      </div>
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {items.map((item) => (
-          <Link
-            key={item.href}
-            href={item.href}
-            className={cn(
-              "group bg-card relative flex h-full flex-col gap-3 rounded-xl border p-5 ring-2 ring-transparent transition-all hover:-translate-y-0.5 hover:shadow-lg",
-              accentHoverRing[item.accent],
-            )}
-          >
-            <div
-              className={cn(
-                "inline-flex size-10 items-center justify-center rounded-lg",
-                accentClass[item.accent],
-              )}
-            >
-              <item.icon className="size-5" />
-            </div>
-            <div className="space-y-1">
-              <h3 className="font-semibold">{item.label}</h3>
-              <p className="text-muted-foreground text-sm">{item.desc}</p>
-            </div>
-            <span className="text-muted-foreground mt-auto text-xs tracking-wider uppercase">
-              {item.status}
-            </span>
-          </Link>
-        ))}
-      </div>
-    </section>
-  );
-}
+      </Section>
 
-function OfficersSection() {
-  return (
-    <section
-      className="mx-auto w-full max-w-6xl px-4 pt-16 sm:px-6"
-      id="officers"
-    >
-      <div className="mb-6 flex flex-col gap-1">
-        <div className="text-muted-foreground text-sm font-medium tracking-wider uppercase">
-          Who runs it
+      <Section accent="yellow" style={{ background: "var(--bg-raise)" }}>
+        <div className="container-page">
+          <div className="section-head">
+            <div>
+              <Eyebrow>Schedule</Eyebrow>
+              <h2 className="heading-2">Mon–Thu · 5–8 PM.</h2>
+            </div>
+            <p className="sub muted">
+              Room 214, Mr. Kissee. Community games count toward silver
+              trophies. Pro sessions count toward gold. Leaderboards reset on
+              the 1st.
+            </p>
+          </div>
+
+          <Reveal as="div" className="bento" stagger>
+            <Spotlight className="b-card b-span-4">
+              <div className="b-head">
+                <div>
+                  <Eyebrow>League week</Eyebrow>
+                  <div className="b-title" style={{ marginTop: 6 }}>
+                    Four nights, four modes
+                  </div>
+                </div>
+                <span className="icon-chip" data-accent="yellow">
+                  <CalendarClock size={18} />
+                </span>
+              </div>
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "repeat(4, 1fr)",
+                  gap: 10,
+                  marginTop: 20,
+                }}
+              >
+                {DAYS.map((day) => (
+                  <div
+                    key={day}
+                    style={{
+                      background: "var(--surface-2)",
+                      border: "1px solid var(--border)",
+                      borderRadius: 10,
+                      padding: "12px 10px",
+                      textAlign: "center",
+                    }}
+                  >
+                    <div
+                      style={{
+                        fontFamily: "var(--font-mono)",
+                        fontSize: 10,
+                        letterSpacing: "0.12em",
+                        textTransform: "uppercase",
+                        color: "var(--text-3)",
+                      }}
+                    >
+                      {day}
+                    </div>
+                    <div
+                      style={{
+                        fontWeight: 600,
+                        fontSize: 14,
+                        marginTop: 4,
+                      }}
+                    >
+                      5 – 8 PM
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </Spotlight>
+
+            <Spotlight className="b-card b-span-2">
+              <span className="icon-chip" data-accent="green">
+                <Sparkles size={18} />
+              </span>
+              <div className="b-title" style={{ marginTop: 16 }}>
+                Wednesday ritual
+              </div>
+              <div className="b-desc">
+                Recap, goals, minutes — then shuffle and play.
+              </div>
+              <Link
+                href="/minutes"
+                className="btn btn-ghost btn-sm"
+                style={{ marginTop: 16, alignSelf: "flex-start" }}
+              >
+                Read the minutes
+              </Link>
+            </Spotlight>
+          </Reveal>
         </div>
-        <h2 className="text-3xl font-bold tracking-tight">Officer roster.</h2>
-      </div>
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        {OFFICERS.map((officer) => (
-          <div
-            key={officer.name}
-            className="bg-card flex items-center gap-3 rounded-xl border p-4"
-          >
-            <div
-              className={cn(
-                "inline-flex size-11 shrink-0 items-center justify-center rounded-full text-sm font-bold",
-                accentClass[officer.accent],
-              )}
-              aria-hidden
-            >
-              {officer.name
+      </Section>
+
+      <Section accent="red">
+        <div className="container-page">
+          <div className="section-head">
+            <div>
+              <Eyebrow>Officers</Eyebrow>
+              <h2 className="heading-2">Who runs it.</h2>
+            </div>
+            <p className="sub muted">
+              Elected students plus a teacher rep. Decisions happen in the
+              open, at the Wednesday meeting.
+            </p>
+          </div>
+
+          <Reveal as="div" className="off-grid" stagger>
+            {OFFICERS.map((officer) => {
+              const init = officer.name
                 .split(" ")
                 .map((n) => n[0])
                 .slice(0, 2)
-                .join("")}
-            </div>
-            <div className="min-w-0">
-              <div className="truncate font-semibold">{officer.name}</div>
-              <div className="text-muted-foreground truncate text-xs">
-                {officer.title} · {ROLE_LABEL[officer.role]}
+                .join("");
+              return (
+                <div key={officer.name} className="off">
+                  <span
+                    className="off-ava"
+                    style={{
+                      background: `color-mix(in srgb, var(--uno-${officer.accent}) 22%, var(--surface-2))`,
+                      borderColor: `color-mix(in srgb, var(--uno-${officer.accent}) 45%, var(--border))`,
+                    }}
+                    aria-hidden
+                  >
+                    {init}
+                  </span>
+                  <div className="off-role">{ROLE_LABEL[officer.role]}</div>
+                  <div className="off-name">{officer.name}</div>
+                  <div className="off-note">{officer.title}</div>
+                </div>
+              );
+            })}
+          </Reveal>
+        </div>
+      </Section>
+
+      <Section>
+        <div className="container-page">
+          <Reveal
+            as="div"
+            style={{
+              position: "relative",
+              border: "1px solid var(--border)",
+              borderRadius: 20,
+              padding: "clamp(40px, 6vw, 80px)",
+              textAlign: "center",
+              overflow: "hidden",
+              background: "var(--surface)",
+            }}
+          >
+            <div className="grid-bg" />
+            <div className="aurora" style={{ opacity: 0.5 }} />
+            <div style={{ position: "relative" }}>
+              <Eyebrow>Season is open</Eyebrow>
+              <h2
+                className="heading-2"
+                style={{ maxWidth: 720, margin: "14px auto 0" }}
+              >
+                Come play Wednesday. Stay for the bracket.
+              </h2>
+              <p
+                className="muted"
+                style={{
+                  maxWidth: 440,
+                  margin: "18px auto 0",
+                  fontSize: 15,
+                }}
+              >
+                Open to anyone at Ripon. No experience required. We&apos;ll
+                teach you stacking, you&apos;ll teach us your custom wild.
+              </p>
+              <div
+                style={{
+                  display: "inline-flex",
+                  gap: 10,
+                  marginTop: 28,
+                  flexWrap: "wrap",
+                  justifyContent: "center",
+                }}
+              >
+                <Show when="signed-out">
+                  <SignUpButton mode="modal">
+                    <button type="button" className="btn btn-primary">
+                      Create account
+                    </button>
+                  </SignUpButton>
+                </Show>
+                <Show when="signed-in">
+                  <Link href="/chat" className="btn btn-primary">
+                    Open chat
+                  </Link>
+                </Show>
+                <Link href="/fundraisers" className="btn btn-ghost">
+                  How it works
+                </Link>
               </div>
             </div>
-          </div>
-        ))}
-      </div>
-    </section>
+          </Reveal>
+        </div>
+      </Section>
+    </div>
   );
 }
