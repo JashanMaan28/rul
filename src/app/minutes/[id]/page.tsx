@@ -7,9 +7,7 @@ import remarkGfm from "remark-gfm";
 import { db } from "~/server/db";
 import { getCurrentUser } from "~/lib/user";
 import { can } from "~/lib/roles";
-import { Badge } from "~/components/ui/badge";
-import { buttonVariants } from "~/components/ui/button";
-import { cn } from "~/lib/utils";
+import { Eyebrow, Reveal, Section } from "~/components/primitives";
 import { DeleteButton } from "./delete-button";
 
 export async function generateMetadata({
@@ -52,49 +50,68 @@ export default async function MinutesDetailPage({
   if (!minutes.isPublished && !canWrite) notFound();
 
   return (
-    <article className="mx-auto w-full max-w-3xl px-4 py-12 sm:px-6">
-      <Link
-        href="/minutes"
-        className={cn(buttonVariants({ variant: "ghost", size: "sm" }), "mb-4")}
-      >
-        <ArrowLeft className="mr-1 size-4" />
-        All minutes
-      </Link>
+    <Section accent="green">
+      <article className="container-page" style={{ maxWidth: 820 }}>
+        <Link href="/minutes" className="back-link">
+          <ArrowLeft size={12} />
+          All minutes
+        </Link>
 
-      <header className="mb-6 flex flex-wrap items-start justify-between gap-3">
-        <div>
-          <div className="flex items-center gap-2">
-            <h1 className="text-3xl font-bold tracking-tight">
-              {minutes.title}
-            </h1>
-            {!minutes.isPublished ? (
-              <Badge variant="secondary">Draft</Badge>
-            ) : null}
-          </div>
-          <p className="text-muted-foreground mt-1 text-sm">
-            {dateFmt.format(minutes.meetingAt)} · by{" "}
-            {minutes.author.displayName}
-          </p>
-        </div>
-        {canWrite ? (
-          <div className="flex items-center gap-2">
-            <Link
-              href={`/minutes/${minutes.id}/edit`}
-              className={cn(buttonVariants({ variant: "outline", size: "sm" }))}
+        <div className="page-head">
+          <div>
+            <Eyebrow>Minutes</Eyebrow>
+            <h1>{minutes.title}</h1>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 10,
+                marginTop: 14,
+                flexWrap: "wrap",
+              }}
             >
-              <Pencil className="size-4" />
-              Edit
-            </Link>
-            <DeleteButton id={minutes.id} />
+              {!minutes.isPublished ? (
+                <span className="status-chip" data-status="closed">
+                  Draft
+                </span>
+              ) : (
+                <span className="status-chip" data-status="open">
+                  Published
+                </span>
+              )}
+              <span
+                style={{
+                  fontFamily: "var(--font-mono)",
+                  fontSize: 11,
+                  color: "var(--text-3)",
+                  letterSpacing: "0.02em",
+                }}
+              >
+                {dateFmt.format(minutes.meetingAt)} · by{" "}
+                {minutes.author.displayName}
+              </span>
+            </div>
           </div>
-        ) : null}
-      </header>
+          {canWrite ? (
+            <div className="action-row">
+              <Link
+                href={`/minutes/${minutes.id}/edit`}
+                className="btn btn-ghost btn-sm"
+              >
+                <Pencil size={14} />
+                Edit
+              </Link>
+              <DeleteButton id={minutes.id} />
+            </div>
+          ) : null}
+        </div>
 
-      <div className="prose prose-neutral bg-card dark:prose-invert max-w-none rounded-2xl border p-6 text-[15px] leading-relaxed">
-        <ReactMarkdown remarkPlugins={[remarkGfm]}>
-          {minutes.content}
-        </ReactMarkdown>
-      </div>
-    </article>
+        <Reveal as="div" className="prose-md">
+          <ReactMarkdown remarkPlugins={[remarkGfm]}>
+            {minutes.content}
+          </ReactMarkdown>
+        </Reveal>
+      </article>
+    </Section>
   );
 }

@@ -4,9 +4,7 @@ import { NotebookPen, Plus } from "lucide-react";
 import { db } from "~/server/db";
 import { getCurrentUser } from "~/lib/user";
 import { can } from "~/lib/roles";
-import { buttonVariants } from "~/components/ui/button";
-import { Badge } from "~/components/ui/badge";
-import { cn } from "~/lib/utils";
+import { Eyebrow, Reveal, Section } from "~/components/primitives";
 
 export const metadata: Metadata = {
   title: "Minutes",
@@ -33,66 +31,85 @@ export default async function MinutesPage() {
     include: { author: { select: { displayName: true } } },
   });
 
-  return (
-    <section className="mx-auto w-full max-w-4xl px-4 py-12 sm:px-6">
-      <div className="mb-8 flex flex-wrap items-end justify-between gap-3">
-        <div className="space-y-1">
-          <div className="text-muted-foreground text-sm font-medium tracking-widest uppercase">
-            Wednesday recaps &amp; more
-          </div>
-          <h1 className="text-3xl font-bold tracking-tight">Meeting minutes</h1>
-          <p className="text-muted-foreground text-sm">
-            What we talked about, what we decided, who showed up.
-          </p>
-        </div>
-        {canWrite ? (
-          <Link
-            href="/minutes/new"
-            className={cn(buttonVariants({ size: "sm" }))}
-          >
-            <Plus className="size-4" />
-            New minutes
-          </Link>
-        ) : null}
-      </div>
+  const publishedCount = minutes.filter((m) => m.isPublished).length;
 
-      {minutes.length === 0 ? (
-        <div className="bg-muted/30 rounded-2xl border border-dashed p-12 text-center">
-          <NotebookPen className="text-muted-foreground mx-auto size-10" />
-          <p className="mt-3 font-medium">No minutes posted yet.</p>
-          <p className="text-muted-foreground text-sm">
-            {canWrite
-              ? "Post the first Wednesday recap."
-              : "The Secretary will post recaps here after each meeting."}
-          </p>
+  return (
+    <Section accent="green">
+      <div className="container-page">
+        <div className="page-head">
+          <div>
+            <Eyebrow>Wednesday recaps</Eyebrow>
+            <h1>Meeting minutes.</h1>
+            <p className="sub" style={{ marginTop: 10 }}>
+              What we talked about, what we decided, who showed up. Markdown
+              rendered · {publishedCount} published.
+            </p>
+          </div>
+          {canWrite ? (
+            <Link href="/minutes/new" className="btn btn-primary btn-sm">
+              <Plus size={14} />
+              New minutes
+            </Link>
+          ) : null}
         </div>
-      ) : (
-        <ul className="space-y-3">
-          {minutes.map((m) => (
-            <li key={m.id}>
-              <Link
-                href={`/minutes/${m.id}`}
-                className="group bg-card flex items-start justify-between gap-4 rounded-2xl border p-5 transition-all hover:-translate-y-0.5 hover:shadow-md"
-              >
-                <div className="min-w-0 space-y-1">
-                  <div className="flex items-center gap-2">
-                    <h2 className="truncate text-lg font-semibold group-hover:underline">
-                      {m.title}
-                    </h2>
-                    {!m.isPublished ? (
-                      <Badge variant="secondary">Draft</Badge>
-                    ) : null}
+
+        {minutes.length === 0 ? (
+          <div
+            className="callout"
+            style={{
+              textAlign: "center",
+              padding: "48px 24px",
+              borderStyle: "dashed",
+            }}
+          >
+            <NotebookPen
+              size={28}
+              style={{
+                color: "var(--text-3)",
+                display: "block",
+                margin: "0 auto 10px",
+              }}
+            />
+            <div style={{ fontWeight: 600, color: "var(--text)" }}>
+              No minutes posted yet.
+            </div>
+            <div style={{ marginTop: 4 }}>
+              {canWrite
+                ? "Post the first Wednesday recap."
+                : "The Secretary will post recaps here after each meeting."}
+            </div>
+          </div>
+        ) : (
+          <Reveal as="ul" className="poll-list" stagger>
+            {minutes.map((m) => (
+              <li key={m.id}>
+                <Link
+                  href={`/minutes/${m.id}`}
+                  className="doc-row"
+                  style={{ textDecoration: "none" }}
+                >
+                  <div className="doc-row-main">
+                    <div className="doc-row-title">
+                      <h3>{m.title}</h3>
+                      {!m.isPublished ? (
+                        <span className="status-chip" data-status="closed">
+                          Draft
+                        </span>
+                      ) : null}
+                    </div>
+                    <div className="doc-row-meta">
+                      {dateFmt.format(m.meetingAt)} · by {m.author.displayName}
+                    </div>
                   </div>
-                  <p className="text-muted-foreground text-sm">
-                    {dateFmt.format(m.meetingAt)} · by {m.author.displayName}
-                  </p>
-                </div>
-                <span className="text-muted-foreground text-sm">→</span>
-              </Link>
-            </li>
-          ))}
-        </ul>
-      )}
-    </section>
+                  <span className="doc-row-arrow" aria-hidden>
+                    →
+                  </span>
+                </Link>
+              </li>
+            ))}
+          </Reveal>
+        )}
+      </div>
+    </Section>
   );
 }

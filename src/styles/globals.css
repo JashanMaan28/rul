@@ -1225,7 +1225,8 @@ button:hover .rul-mark {
   display: grid;
   gap: 12px;
 }
-.poll-row {
+.poll-row,
+.doc-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -1239,43 +1240,50 @@ button:hover .rul-mark {
     transform 0.3s cubic-bezier(0.2, 0.8, 0.3, 1),
     background 0.2s ease;
 }
-.poll-row:hover {
+.poll-row:hover,
+.doc-row:hover {
   border-color: var(--border-strong);
   transform: translateY(-1px);
   background: var(--surface-2);
 }
-.poll-row-main {
+.poll-row-main,
+.doc-row-main {
   min-width: 0;
   display: flex;
   flex-direction: column;
   gap: 6px;
 }
-.poll-row-title {
+.poll-row-title,
+.doc-row-title {
   display: flex;
   align-items: center;
   gap: 10px;
   flex-wrap: wrap;
 }
-.poll-row-title h3 {
+.poll-row-title h3,
+.doc-row-title h3 {
   font-size: 16px;
   font-weight: 600;
   letter-spacing: -0.01em;
   color: var(--text);
   margin: 0;
 }
-.poll-row-meta {
+.poll-row-meta,
+.doc-row-meta {
   font-family: var(--font-mono);
   font-size: 11px;
   letter-spacing: 0.02em;
   color: var(--text-3);
 }
-.poll-row-arrow {
+.poll-row-arrow,
+.doc-row-arrow {
   color: var(--text-3);
   transition:
     transform 0.2s ease,
     color 0.2s ease;
 }
-.poll-row:hover .poll-row-arrow {
+.poll-row:hover .poll-row-arrow,
+.doc-row:hover .doc-row-arrow {
   color: var(--text);
   transform: translateX(2px);
 }
@@ -1435,6 +1443,223 @@ button:hover .rul-mark {
   transition: color 0.15s ease;
 }
 .back-link:hover {
+  color: var(--text);
+}
+
+/* ---------- Action row (Edit / Delete etc.) ---------- */
+.action-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* ---------- Checkbox row ---------- */
+.check-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+}
+.check-row input[type="checkbox"] {
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 5px;
+  border: 1px solid var(--border-strong);
+  background: var(--surface-2);
+  cursor: pointer;
+  position: relative;
+  flex-shrink: 0;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease;
+}
+.check-row input[type="checkbox"]:checked {
+  background: var(--uno-green);
+  border-color: var(--uno-green);
+}
+.check-row input[type="checkbox"]:checked::after {
+  content: "";
+  position: absolute;
+  inset: 3px 4px;
+  border-right: 2px solid #0b0b0e;
+  border-bottom: 2px solid #0b0b0e;
+  transform: rotate(45deg) translate(-1px, -2px);
+  width: 5px;
+  height: 9px;
+}
+.check-row input[type="checkbox"]:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--uno-blue) 55%, transparent);
+  outline-offset: 2px;
+}
+.check-row label {
+  font-size: 13.5px;
+  color: var(--text);
+  cursor: pointer;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+/* ---------- Markdown reader (prose-md) ---------- */
+.prose-md {
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--surface);
+  padding: clamp(20px, 3vw, 32px);
+  color: var(--text);
+  font-size: 15px;
+  line-height: 1.7;
+}
+.prose-md > :first-child {
+  margin-top: 0;
+}
+.prose-md > :last-child {
+  margin-bottom: 0;
+}
+.prose-md h1,
+.prose-md h2,
+.prose-md h3,
+.prose-md h4 {
+  font-family: var(--font-display);
+  color: var(--text);
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+  margin: 1.4em 0 0.5em;
+}
+.prose-md h1 {
+  font-size: 24px;
+}
+.prose-md h2 {
+  font-size: 20px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--border);
+}
+.prose-md h3 {
+  font-size: 17px;
+}
+.prose-md h4 {
+  font-size: 15px;
+  color: var(--text-2);
+}
+.prose-md p {
+  margin: 0.8em 0;
+  color: var(--text-2);
+}
+.prose-md strong {
+  color: var(--text);
+  font-weight: 600;
+}
+.prose-md em {
+  color: var(--text);
+  font-style: italic;
+}
+.prose-md a {
+  color: var(--text);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  text-decoration-color: color-mix(
+    in srgb,
+    var(--uno-blue) 55%,
+    var(--border)
+  );
+}
+.prose-md a:hover {
+  text-decoration-color: var(--uno-blue);
+}
+.prose-md ul,
+.prose-md ol {
+  margin: 0.6em 0 0.8em;
+  padding-left: 1.4em;
+  color: var(--text-2);
+}
+.prose-md li {
+  margin: 0.25em 0;
+}
+.prose-md li::marker {
+  color: var(--text-3);
+}
+.prose-md blockquote {
+  margin: 1em 0;
+  padding: 6px 14px;
+  border-left: 3px solid color-mix(in srgb, var(--uno-yellow) 65%, var(--border));
+  background: color-mix(in srgb, var(--uno-yellow) 6%, transparent);
+  color: var(--text-2);
+  border-radius: 0 8px 8px 0;
+}
+.prose-md code {
+  font-family: var(--font-mono);
+  font-size: 0.88em;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  padding: 1px 6px;
+  border-radius: 6px;
+  color: var(--text);
+}
+.prose-md pre {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 16px;
+  overflow-x: auto;
+  font-size: 13px;
+  line-height: 1.55;
+}
+.prose-md pre code {
+  background: none;
+  border: 0;
+  padding: 0;
+  font-size: inherit;
+}
+.prose-md hr {
+  border: 0;
+  border-top: 1px solid var(--border);
+  margin: 1.6em 0;
+}
+.prose-md table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1em 0;
+  font-size: 14px;
+}
+.prose-md th,
+.prose-md td {
+  border: 1px solid var(--border);
+  padding: 8px 12px;
+  text-align: left;
+}
+.prose-md th {
+  background: var(--surface-2);
+  color: var(--text);
+  font-weight: 600;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.prose-md img {
+  max-width: 100%;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+}
+.prose-md input[type="checkbox"] {
+  accent-color: var(--uno-green);
+  transform: translateY(1px);
+  margin-right: 6px;
+}
+
+/* ---------- Destructive button variant ---------- */
+.btn-danger {
+  background: color-mix(in srgb, var(--uno-red) 18%, var(--surface));
+  border-color: color-mix(in srgb, var(--uno-red) 40%, var(--border));
+  color: color-mix(in srgb, var(--uno-red) 80%, var(--text));
+}
+.btn-danger:hover {
+  background: color-mix(in srgb, var(--uno-red) 28%, var(--surface));
+  border-color: color-mix(in srgb, var(--uno-red) 60%, var(--border));
   color: var(--text);
 }
 

@@ -4,7 +4,6 @@ import { useTransition } from "react";
 import { unstable_rethrow } from "next/navigation";
 import { Trash2 } from "lucide-react";
 import { toast } from "sonner";
-import { Button } from "~/components/ui/button";
 import { deleteMinutes } from "../_actions";
 
 export function DeleteButton({ id }: { id: string }) {
@@ -15,7 +14,6 @@ export function DeleteButton({ id }: { id: string }) {
     startTransition(async () => {
       try {
         await deleteMinutes(id);
-        // deleteMinutes redirects on success.
       } catch (err) {
         unstable_rethrow(err);
         toast.error(err instanceof Error ? err.message : "Couldn't delete");
@@ -24,14 +22,14 @@ export function DeleteButton({ id }: { id: string }) {
   }
 
   return (
-    <Button
-      variant="destructive"
-      size="sm"
+    <button
+      type="button"
       onClick={onClick}
       disabled={pending}
+      className="btn btn-danger btn-sm"
     >
-      <Trash2 className="size-4" />
+      <Trash2 size={14} />
       {pending ? "Deleting…" : "Delete"}
-    </Button>
+    </button>
   );
 }
