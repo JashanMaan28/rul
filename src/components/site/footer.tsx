@@ -66,9 +66,6 @@ export function Footer() {
             <h5>Community</h5>
             <ul>
               <li>
-                <Link href="/chat">Chat</Link>
-              </li>
-              <li>
                 <Link href="/minutes">Minutes</Link>
               </li>
               <li>

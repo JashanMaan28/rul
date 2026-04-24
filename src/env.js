@@ -27,7 +27,6 @@ export const env = createEnv({
           .map((email) => email.trim().toLowerCase())
           .filter(Boolean),
       ),
-    ABLY_API_KEY: z.string().min(1),
     CRON_SECRET: z.string().min(1).optional(),
   },
 
@@ -44,7 +43,6 @@ export const env = createEnv({
     CLERK_WEBHOOK_SIGNING_SECRET: process.env.CLERK_WEBHOOK_SIGNING_SECRET,
     ADMIN_EMAILS: process.env.ADMIN_EMAILS,
     FOUNDER_EMAILS: process.env.FOUNDER_EMAILS,
-    ABLY_API_KEY: process.env.ABLY_API_KEY,
     CRON_SECRET: process.env.CRON_SECRET,
     NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY:
       process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY,

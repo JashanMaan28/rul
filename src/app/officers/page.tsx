@@ -1,6 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
-import { MessageCircle } from "lucide-react";
 import { OFFICERS, ROLE_LABEL } from "~/lib/officers";
 import { Eyebrow, Reveal, Section } from "~/components/primitives";
 
@@ -54,27 +52,6 @@ export default function OfficersPage() {
             );
           })}
         </Reveal>
-
-        <div
-          className="callout"
-          style={{
-            marginTop: 28,
-            display: "flex",
-            alignItems: "center",
-            gap: 12,
-            flexWrap: "wrap",
-          }}
-        >
-          <MessageCircle
-            size={18}
-            style={{ color: "var(--text-3)", flexShrink: 0 }}
-          />
-          <span>
-            Need to reach an officer? Members can{" "}
-            <Link href="/chat">open a DM from chat</Link> — every officer has
-            one lane open.
-          </span>
-        </div>
       </div>
     </Section>
   );

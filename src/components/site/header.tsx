@@ -16,9 +16,6 @@ export async function Header() {
   const showAdmin = currentUser
     ? can(currentUser.roles, "access_admin")
     : false;
-  const navLinks = currentUser
-    ? [...NAV_PUBLIC, { href: "/chat", label: "Chat" }]
-    : NAV_PUBLIC;
 
-  return <HeaderClient navLinks={navLinks} showAdmin={showAdmin} />;
+  return <HeaderClient navLinks={NAV_PUBLIC} showAdmin={showAdmin} />;
 }

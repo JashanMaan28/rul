@@ -2,7 +2,7 @@
 
 ## Project
 
-Ripon Uno League (RUL) — Ripon High's UNO club site. Next.js 15 App Router + Prisma (Postgres) + Clerk + Ably. Package manager: **bun**.
+Ripon Uno League (RUL) — Ripon High's UNO club site. Next.js 15 App Router + Prisma (Postgres) + Clerk. Package manager: **bun**.
 
 ## Critical Gotchas
 
@@ -25,11 +25,6 @@ Import from `~/env`, **never** `process.env` directly. Validated via `@t3-oss/en
 - `FOUNDER_EMAILS` / `ADMIN_EMAILS` in env auto-seed roles on first sign-in. Seeds only apply to users still at `[MEMBER]` — never overwrite admin UI edits.
 - `FOUNDER` is excluded from `ASSIGNABLE_ROLES` — only comes from `FOUNDER_EMAILS`. The admin role-update action rejects changes to any user holding FOUNDER.
 - `src/lib/roles.ts` is the **single source of truth** for role → permission mapping. Use `can()` / `canAny()`. Don't hardcode role checks.
-- `/api/chat/*` routes do their own auth (401, no redirect) — intentionally excluded from middleware matcher.
-
-## Chat (Ably)
-
-Postgres is source of truth; Ably is fan-out only. A failing Ably publish must surface as an error to the composer — don't swallow it.
 
 ## ⛔ Deferred: Games + Leaderboard
 

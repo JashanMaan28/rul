@@ -8,8 +8,6 @@ export type Permission =
   | "close_polls"
   | "write_minutes"
   | "manage_fundraisers"
-  | "moderate_chat"
-  | "can_dm"
   | "access_admin";
 
 /**
@@ -26,8 +24,6 @@ const MATRIX: Record<Role, ReadonlyArray<Permission>> = {
     "close_polls",
     "write_minutes",
     "manage_fundraisers",
-    "moderate_chat",
-    "can_dm",
     "access_admin",
   ],
   ADMIN: [
@@ -38,8 +34,6 @@ const MATRIX: Record<Role, ReadonlyArray<Permission>> = {
     "close_polls",
     "write_minutes",
     "manage_fundraisers",
-    "moderate_chat",
-    "can_dm",
     "access_admin",
   ],
   OFFICER_ALL: [
@@ -49,13 +43,11 @@ const MATRIX: Record<Role, ReadonlyArray<Permission>> = {
     "close_polls",
     "write_minutes",
     "manage_fundraisers",
-    "moderate_chat",
-    "can_dm",
   ],
-  OFFICER_MINUTES: ["write_minutes", "can_dm"],
-  OFFICER_GAMES: ["record_games", "manage_prizes", "can_dm"],
-  OFFICER_POLLS: ["create_polls", "close_polls", "can_dm"],
-  OFFICER_FUNDRAISERS: ["manage_fundraisers", "can_dm"],
+  OFFICER_MINUTES: ["write_minutes"],
+  OFFICER_GAMES: ["record_games", "manage_prizes"],
+  OFFICER_POLLS: ["create_polls", "close_polls"],
+  OFFICER_FUNDRAISERS: ["manage_fundraisers"],
   ADVISOR: [],
   MEMBER: [],
 };
@@ -134,52 +126,3 @@ export function primaryRole(roles: ReadonlyArray<Role>): Role {
   return sortRoles(roles)[0] ?? Role.MEMBER;
 }
 
-/**
- * Visual style for rendering a user's name in chat (and other surfaces where
- * role should be conveyed at a glance). Highest-tier roles get `shiny: true`
- * which callers render with a gradient-sweep effect. Returns null for
- * plain members — callers then fall back to default text color.
- */
-export type RoleBadgeStyle = {
-  color: string;
-  shiny: boolean;
-  shineColor?: string;
-};
-
-export function roleBadgeStyleFor(
-  roles: ReadonlyArray<Role>,
-): RoleBadgeStyle | null {
-  switch (primaryRole(roles)) {
-    case Role.FOUNDER:
-      return {
-        color: "var(--trophy-gold)",
-        shiny: true,
-        shineColor: "#fff3c4",
-      };
-    case Role.ADMIN:
-      return {
-        color: "var(--uno-red)",
-        shiny: true,
-        shineColor: "#ffd3d3",
-      };
-    case Role.OFFICER_ALL:
-      return {
-        color: "var(--uno-blue)",
-        shiny: true,
-        shineColor: "#cfe3ff",
-      };
-    case Role.OFFICER_MINUTES:
-      return { color: "var(--uno-green)", shiny: false };
-    case Role.OFFICER_GAMES:
-      return { color: "var(--uno-yellow)", shiny: false };
-    case Role.OFFICER_POLLS:
-      return { color: "var(--uno-blue)", shiny: false };
-    case Role.OFFICER_FUNDRAISERS:
-      return { color: "var(--uno-red)", shiny: false };
-    case Role.ADVISOR:
-      return { color: "var(--text-3)", shiny: false };
-    case Role.MEMBER:
-    default:
-      return null;
-  }
-}

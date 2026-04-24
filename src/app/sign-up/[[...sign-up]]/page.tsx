@@ -11,8 +11,8 @@ export default function SignUpPage() {
           <Eyebrow>Pull up a chair</Eyebrow>
           <h1 className="auth-title">Join the league.</h1>
           <p className="auth-desc">
-            Sign up with your school email to get on the roster, track trophies,
-            and jump into club chat.
+            Sign up with your school email to get on the roster and track
+            trophies.
           </p>
         </div>
         <SignUp />

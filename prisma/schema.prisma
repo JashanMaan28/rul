@@ -38,11 +38,6 @@ model User {
     minutes       MeetingMinutes[]     @relation("MinutesAuthor")
     notifications NotifySubscription[]
     fundraisers   Fundraiser[]         @relation("FundraiserCreator")
-    chatMessages  ChatMessage[]        @relation("ChatAuthor")
-    chatDeletions ChatMessage[]        @relation("ChatDeleter")
-    chatMemberships ChatRoomMember[]
-    chatMutes     ChatMute[]           @relation("ChatMuteTarget")
-    chatMutesIssued ChatMute[]         @relation("ChatMuteIssuer")
 }
 
 /// Polls officers raise for members to vote on (future feature ideas, prize
@@ -150,76 +145,6 @@ model Fundraiser {
     updatedAt   DateTime  @updatedAt
 
     @@index([isClosed, createdAt])
-}
-
-enum ChatRoomKind {
-    ROOM
-    DM
-}
-
-/// Chat rooms (named channels like #general, #officers) and DMs (kind=DM).
-/// For DMs, membership is exactly 2 users; `slug` is synthesized from their
-/// IDs (lowest first) so the same pair always maps to the same row.
-model ChatRoom {
-    id              String       @id @default(cuid())
-    slug            String       @unique
-    name            String
-    description     String?
-    kind            ChatRoomKind @default(ROOM)
-    isOfficerOnly   Boolean      @default(false)
-    createdAt       DateTime     @default(now())
-
-    members  ChatRoomMember[]
-    messages ChatMessage[]
-    mutes    ChatMute[]
-
-    @@index([kind])
-}
-
-model ChatRoomMember {
-    id         String    @id @default(cuid())
-    roomId     String
-    room       ChatRoom  @relation(fields: [roomId], references: [id], onDelete: Cascade)
-    userId     String
-    user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-    joinedAt   DateTime  @default(now())
-    lastReadAt DateTime?
-
-    @@unique([roomId, userId])
-    @@index([userId])
-}
-
-model ChatMessage {
-    id        String   @id @default(cuid())
-    roomId    String
-    room      ChatRoom @relation(fields: [roomId], references: [id], onDelete: Cascade)
-    authorId  String
-    author    User     @relation("ChatAuthor", fields: [authorId], references: [id])
-    content   String   @db.Text
-    createdAt DateTime @default(now())
-
-    // Soft delete: keep row for audit, hide content in UI.
-    deletedAt   DateTime?
-    deletedById String?
-    deletedBy   User?     @relation("ChatDeleter", fields: [deletedById], references: [id])
-
-    @@index([roomId, createdAt])
-}
-
-/// Silences a user in one specific room, or globally when roomId is null.
-model ChatMute {
-    id         String    @id @default(cuid())
-    roomId     String?
-    room       ChatRoom? @relation(fields: [roomId], references: [id], onDelete: Cascade)
-    userId     String
-    user       User      @relation("ChatMuteTarget", fields: [userId], references: [id], onDelete: Cascade)
-    mutedById  String
-    mutedBy    User      @relation("ChatMuteIssuer", fields: [mutedById], references: [id])
-    mutedUntil DateTime?
-    reason     String?
-    createdAt  DateTime  @default(now())
-
-    @@index([userId, roomId])
 }
 
 // ---------------------------------------------------------------------------

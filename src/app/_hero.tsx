@@ -90,13 +90,6 @@ export function Hero() {
                 </span>
               </SignUpTrigger>
             </Show>
-            <Show when="signed-in">
-              <Link href="/chat" className="btn-beam">
-                <span>
-                  Open chat <ArrowRight size={14} />
-                </span>
-              </Link>
-            </Show>
             <Link href="/leaderboard" className="btn btn-primary">
               View standings
             </Link>

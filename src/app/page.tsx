@@ -3,7 +3,6 @@ import {
   CalendarClock,
   ClipboardList,
   Gift,
-  MessageSquare,
   Sparkles,
   Trophy,
   Users,
@@ -32,104 +31,6 @@ const META_STYLE: React.CSSProperties = {
   textTransform: "uppercase",
   color: "var(--text-3)",
 };
-
-type ChatMsg = {
-  initials: string;
-  name: string;
-  time: string;
-  text: string;
-  accent: "red" | "yellow" | "green" | "blue";
-};
-
-const CHAT_MESSAGES: ChatMsg[] = [
-  {
-    initials: "MM",
-    name: "Morgan M.",
-    time: "2m",
-    text: "who's up for ranked tonight?",
-    accent: "yellow",
-  },
-  {
-    initials: "VD",
-    name: "Veer D.",
-    time: "1m",
-    text: "bringing the stacker deck",
-    accent: "blue",
-  },
-  {
-    initials: "AJ",
-    name: "Ajit J.",
-    time: "now",
-    text: "room 214, 5pm sharp",
-    accent: "red",
-  },
-];
-
-function ChatPreview() {
-  return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-      {CHAT_MESSAGES.map((m) => (
-        <div
-          key={m.name}
-          style={{ display: "flex", gap: 12, alignItems: "flex-start" }}
-        >
-          <span
-            aria-hidden
-            style={{
-              flexShrink: 0,
-              width: 30,
-              height: 30,
-              borderRadius: 999,
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontFamily: "var(--font-mono)",
-              fontSize: 10.5,
-              fontWeight: 600,
-              letterSpacing: "0.05em",
-              background: `color-mix(in srgb, var(--uno-${m.accent}) 22%, var(--surface-2))`,
-              border: `1px solid color-mix(in srgb, var(--uno-${m.accent}) 45%, var(--border))`,
-              color: `color-mix(in srgb, var(--uno-${m.accent}) 85%, var(--text))`,
-            }}
-          >
-            {m.initials}
-          </span>
-          <div style={{ minWidth: 0, flex: 1 }}>
-            <div
-              style={{
-                display: "flex",
-                alignItems: "baseline",
-                gap: 8,
-                marginBottom: 2,
-              }}
-            >
-              <span
-                style={{
-                  fontSize: 12.5,
-                  fontWeight: 600,
-                  color: "var(--text)",
-                  letterSpacing: "-0.005em",
-                }}
-              >
-                {m.name}
-              </span>
-              <span style={META_STYLE}>{m.time}</span>
-            </div>
-            <div
-              style={{
-                fontSize: 13,
-                color: "var(--text-2)",
-                lineHeight: 1.4,
-              }}
-            >
-              {m.text}
-            </div>
-          </div>
-        </div>
-      ))}
-    </div>
-  );
-}
 
 type MinuteItem = { done: boolean; label: string };
 
@@ -301,15 +202,6 @@ export default function HomePage() {
                 title: "Officers float ideas. Members decide.",
                 description:
                   "Live polls for custom rules, event picks, and gamemode rotations. Winners get built into the next session.",
-              },
-              {
-                label: "Community chat",
-                accent: "blue",
-                icon: <MessageSquare size={18} />,
-                title: "#general, anytime",
-                description:
-                  "Find a game in minutes. Channels for strategy, rules, brackets, memes — with an officer DM lane for moderation.",
-                preview: <ChatPreview />,
               },
               {
                 accent: "green",
@@ -529,11 +421,6 @@ export default function HomePage() {
                   <SignUpTrigger type="button" className="btn btn-primary">
                     Create account
                   </SignUpTrigger>
-                </Show>
-                <Show when="signed-in">
-                  <Link href="/chat" className="btn btn-primary">
-                    Open chat
-                  </Link>
                 </Show>
                 <Link href="/fundraisers" className="btn btn-ghost">
                   How it works
