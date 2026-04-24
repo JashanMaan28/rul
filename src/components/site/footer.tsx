@@ -95,7 +95,7 @@ export function Footer() {
 
         <div className="footer-bottom">
           <span>© {year} RIPON UNO LEAGUE</span>
-          <span>BUILT IN NEXT.JS · RIPON, CA</span>
+          <Link href="/constitution">CONSTITUTION · RIPON, CA</Link>
         </div>
       </div>
     </footer>
