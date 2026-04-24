@@ -26,7 +26,11 @@ const TICKER_ITEMS = [
     dot: "green" as const,
     children: "Seven-O Swap · this Tuesday 4PM · Rm 214",
   },
-  { key: "a5", dot: "red" as const, children: "Pot: $187 raised for nationals" },
+  {
+    key: "a5",
+    dot: "red" as const,
+    children: "Pot: $187 raised for nationals",
+  },
   {
     key: "a6",
     dot: "blue" as const,
@@ -94,7 +98,7 @@ export function Hero() {
                 </span>
               </Link>
             </Show>
-            <Link href="/leaderboard" className="btn btn-ghost">
+            <Link href="/leaderboard" className="btn btn-primary">
               View standings
             </Link>
           </div>

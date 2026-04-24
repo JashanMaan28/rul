@@ -19,9 +19,206 @@ import {
   Section,
   Spotlight,
 } from "~/components/primitives";
+import MagicBento from "~/components/MagicBento";
 import { OFFICERS, ROLE_LABEL } from "~/lib/officers";
 
 const DAYS = ["Mon", "Tue", "Wed", "Thu"] as const;
+
+const META_STYLE: React.CSSProperties = {
+  fontFamily: "var(--font-mono)",
+  fontSize: 10,
+  letterSpacing: "0.1em",
+  textTransform: "uppercase",
+  color: "var(--text-3)",
+};
+
+type ChatMsg = {
+  initials: string;
+  name: string;
+  time: string;
+  text: string;
+  accent: "red" | "yellow" | "green" | "blue";
+};
+
+const CHAT_MESSAGES: ChatMsg[] = [
+  {
+    initials: "MM",
+    name: "Morgan M.",
+    time: "2m",
+    text: "who's up for ranked tonight?",
+    accent: "yellow",
+  },
+  {
+    initials: "VD",
+    name: "Veer D.",
+    time: "1m",
+    text: "bringing the stacker deck",
+    accent: "blue",
+  },
+  {
+    initials: "AJ",
+    name: "Ajit J.",
+    time: "now",
+    text: "room 214, 5pm sharp",
+    accent: "red",
+  },
+];
+
+function ChatPreview() {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+      {CHAT_MESSAGES.map((m) => (
+        <div
+          key={m.name}
+          style={{ display: "flex", gap: 12, alignItems: "flex-start" }}
+        >
+          <span
+            aria-hidden
+            style={{
+              flexShrink: 0,
+              width: 30,
+              height: 30,
+              borderRadius: 999,
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontFamily: "var(--font-mono)",
+              fontSize: 10.5,
+              fontWeight: 600,
+              letterSpacing: "0.05em",
+              background: `color-mix(in srgb, var(--uno-${m.accent}) 22%, var(--surface-2))`,
+              border: `1px solid color-mix(in srgb, var(--uno-${m.accent}) 45%, var(--border))`,
+              color: `color-mix(in srgb, var(--uno-${m.accent}) 85%, var(--text))`,
+            }}
+          >
+            {m.initials}
+          </span>
+          <div style={{ minWidth: 0, flex: 1 }}>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "baseline",
+                gap: 8,
+                marginBottom: 2,
+              }}
+            >
+              <span
+                style={{
+                  fontSize: 12.5,
+                  fontWeight: 600,
+                  color: "var(--text)",
+                  letterSpacing: "-0.005em",
+                }}
+              >
+                {m.name}
+              </span>
+              <span style={META_STYLE}>{m.time}</span>
+            </div>
+            <div
+              style={{
+                fontSize: 13,
+                color: "var(--text-2)",
+                lineHeight: 1.4,
+              }}
+            >
+              {m.text}
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+type MinuteItem = { done: boolean; label: string };
+
+const MINUTE_ITEMS: MinuteItem[] = [
+  { done: true, label: "Attendance · 18 of 22" },
+  { done: true, label: "Nationals travel budget" },
+  { done: false, label: "Custom wild cards vote" },
+  { done: false, label: "Seven-O Swap bracket" },
+];
+
+function MinutesPreview() {
+  const done = MINUTE_ITEMS.filter((i) => i.done).length;
+  return (
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        gap: 12,
+        padding: "14px 16px",
+        borderRadius: 14,
+        border: "1px solid var(--border)",
+        background:
+          "linear-gradient(180deg, var(--surface-2) 0%, color-mix(in srgb, var(--surface) 80%, var(--surface-2)) 100%)",
+      }}
+    >
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          paddingBottom: 10,
+          borderBottom: "1px solid var(--border)",
+        }}
+      >
+        <span style={META_STYLE}>Wed · Apr 23</span>
+        <span
+          style={{
+            fontFamily: "var(--font-mono)",
+            fontSize: 10.5,
+            letterSpacing: "0.08em",
+            color: "var(--text-2)",
+          }}
+        >
+          {done} / {MINUTE_ITEMS.length}
+        </span>
+      </div>
+      <div style={{ display: "flex", flexDirection: "column", gap: 9 }}>
+        {MINUTE_ITEMS.map((it) => (
+          <div
+            key={it.label}
+            style={{
+              display: "flex",
+              gap: 11,
+              alignItems: "center",
+              fontSize: 13,
+              color: it.done ? "var(--text-3)" : "var(--text)",
+            }}
+          >
+            <span
+              aria-hidden
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                width: 16,
+                height: 16,
+                borderRadius: 5,
+                flexShrink: 0,
+                background: it.done
+                  ? "color-mix(in srgb, var(--uno-green) 32%, var(--surface))"
+                  : "var(--surface)",
+                border: `1px solid ${
+                  it.done
+                    ? "color-mix(in srgb, var(--uno-green) 60%, var(--border))"
+                    : "var(--border-strong)"
+                }`,
+                color: "var(--uno-green)",
+                fontSize: 10,
+                lineHeight: 1,
+              }}
+            >
+              {it.done ? "✓" : ""}
+            </span>
+            <span>{it.label}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 export default function HomePage() {
   return (
@@ -41,130 +238,110 @@ export default function HomePage() {
             </p>
           </div>
 
-          <Reveal as="div" className="bento" stagger>
-            <Spotlight
-              className="b-card b-span-3 b-row-2"
-              style={{ minHeight: 320 }}
-            >
-              <div className="b-head">
-                <div>
-                  <Eyebrow>Ranked play</Eyebrow>
-                  <div className="b-title" style={{ marginTop: 6 }}>
-                    Two leaderboards, one system
+          <MagicBento
+            textAutoHide={true}
+            enableStars
+            enableSpotlight
+            enableBorderGlow={true}
+            enableTilt={true}
+            enableMagnetism={true}
+            clickEffect
+            spotlightRadius={400}
+            particleCount={12}
+            glowColor="59, 130, 246"
+            disableAnimations={false}
+            cardData={[
+              {
+                label: "Ranked play",
+                accent: "yellow",
+                icon: <Trophy size={18} />,
+                title: "Two leaderboards, one system",
+                description:
+                  "Every logged game feeds your rank. Community is open to all members; Pro is invite-only and resets each month.",
+                footer: (
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: 16,
+                    }}
+                  >
+                    <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                      <MiniCard color="red" label="+4" />
+                      <MiniCard color="yellow" label="7" />
+                      <MiniCard color="green" label="0" />
+                      <MiniCard color="blue" label="+2" />
+                    </div>
+                    <div
+                      style={{
+                        fontFamily: "var(--font-mono)",
+                        fontSize: 11,
+                        color: "var(--text-3)",
+                      }}
+                    >
+                      Launch pending — see{" "}
+                      <Link
+                        href="/leaderboard"
+                        style={{
+                          color: "var(--text-2)",
+                          textDecoration: "underline",
+                        }}
+                      >
+                        standings
+                      </Link>
+                    </div>
                   </div>
-                </div>
-                <span className="icon-chip" data-accent="yellow">
-                  <Trophy size={18} />
-                </span>
-              </div>
-              <p className="b-desc" style={{ maxWidth: 320 }}>
-                Every logged game feeds your rank. Community is open to all
-                members; Pro is invite-only and resets each month.
-              </p>
-              <div
-                style={{
-                  display: "flex",
-                  gap: 8,
-                  marginTop: 20,
-                  flexWrap: "wrap",
-                }}
-              >
-                <MiniCard color="red" label="+4" />
-                <MiniCard color="yellow" label="7" />
-                <MiniCard color="green" label="0" />
-                <MiniCard color="blue" label="+2" />
-              </div>
-              <div
-                style={{
-                  marginTop: 24,
-                  fontFamily: "var(--font-mono)",
-                  fontSize: 11,
-                  color: "var(--text-3)",
-                }}
-              >
-                Launch pending — see{" "}
-                <Link
-                  href="/leaderboard"
-                  style={{ color: "var(--text-2)", textDecoration: "underline" }}
-                >
-                  standings
-                </Link>
-              </div>
-            </Spotlight>
-
-            <Spotlight className="b-card b-span-3">
-              <div className="b-head">
-                <div>
-                  <Eyebrow>Vote</Eyebrow>
-                  <div className="b-title" style={{ marginTop: 6 }}>
-                    Officers float ideas. Members decide.
-                  </div>
-                </div>
-                <span className="icon-chip" data-accent="red">
-                  <Vote size={18} />
-                </span>
-              </div>
-              <p className="b-desc">
-                Live polls for custom rules, event picks, and gamemode
-                rotations. Winners get built into the next session.
-              </p>
-            </Spotlight>
-
-            <Spotlight className="b-card b-span-3">
-              <div className="b-head">
-                <div>
-                  <Eyebrow>Community chat</Eyebrow>
-                  <div className="b-title" style={{ marginTop: 6 }}>
-                    #general, anytime
-                  </div>
-                </div>
-                <span className="icon-chip" data-accent="blue">
-                  <MessageSquare size={18} />
-                </span>
-              </div>
-              <p className="b-desc">
-                Find a game in minutes. Channels for strategy, rules,
-                brackets, memes — with an officer DM lane for moderation.
-              </p>
-            </Spotlight>
-
-            <Spotlight className="b-card b-span-2">
-              <span className="icon-chip" data-accent="green">
-                <ClipboardList size={18} />
-              </span>
-              <div className="b-title" style={{ marginTop: 16 }}>
-                Meeting minutes
-              </div>
-              <div className="b-desc">
-                Wednesday recaps, attendance, and club goals — in Markdown.
-              </div>
-            </Spotlight>
-
-            <Spotlight className="b-card b-span-2">
-              <span className="icon-chip" data-accent="red">
-                <Gift size={18} />
-              </span>
-              <div className="b-title" style={{ marginTop: 16 }}>
-                Fundraiser wall
-              </div>
-              <div className="b-desc">
-                Student-signed cards fund nationals travel and prize packs.
-              </div>
-            </Spotlight>
-
-            <Spotlight className="b-card b-span-2">
-              <span className="icon-chip" data-accent="blue">
-                <Users size={18} />
-              </span>
-              <div className="b-title" style={{ marginTop: 16 }}>
-                <CountUp to={40} />+ members
-              </div>
-              <div className="b-desc">
-                Officers, reps, rookies. New this semester:{" "}
-                <CountUp to={22} />.
-              </div>
-            </Spotlight>
-          </Reveal>
+                ),
+              },
+              {
+                label: "Vote",
+                accent: "red",
+                icon: <Vote size={18} />,
+                title: "Officers float ideas. Members decide.",
+                description:
+                  "Live polls for custom rules, event picks, and gamemode rotations. Winners get built into the next session.",
+              },
+              {
+                label: "Community chat",
+                accent: "blue",
+                icon: <MessageSquare size={18} />,
+                title: "#general, anytime",
+                description:
+                  "Find a game in minutes. Channels for strategy, rules, brackets, memes — with an officer DM lane for moderation.",
+                preview: <ChatPreview />,
+              },
+              {
+                accent: "green",
+                icon: <ClipboardList size={18} />,
+                title: "Meeting minutes",
+                description:
+                  "Wednesday recaps, attendance, and club goals — in Markdown.",
+                preview: <MinutesPreview />,
+              },
+              {
+                accent: "red",
+                icon: <Gift size={18} />,
+                title: "Fundraiser wall",
+                description:
+                  "Student-signed cards fund nationals travel and prize packs.",
+              },
+              {
+                accent: "blue",
+                icon: <Users size={18} />,
+                title: (
+                  <>
+                    <CountUp to={40} />+ members
+                  </>
+                ),
+                description: (
+                  <>
+                    Officers, reps, rookies. New this semester:{" "}
+                    <CountUp to={22} />.
+                  </>
+                ),
+              },
+            ]}
+          />
         </div>
       </Section>
 
@@ -269,8 +446,8 @@ export default function HomePage() {
               <h2 className="heading-2">Who runs it.</h2>
             </div>
             <p className="sub muted">
-              Elected students plus a teacher rep. Decisions happen in the
-              open, at the Wednesday meeting.
+              Elected students plus a teacher rep. Decisions happen in the open,
+              at the Wednesday meeting.
             </p>
           </div>
 
