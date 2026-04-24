@@ -88,9 +88,7 @@ export function MinutesForm(props: Props) {
           name="isPublished"
           defaultChecked={defaults?.isPublished ?? true}
         />
-        <label htmlFor="isPublished">
-          Publish (uncheck to save as draft)
-        </label>
+        <label htmlFor="isPublished">Publish (uncheck to save as draft)</label>
       </div>
 
       <button

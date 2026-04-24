@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { Show, SignInButton, SignUpButton, UserButton } from "@clerk/nextjs";
+import { ArrowRight } from "lucide-react";
 import { cn } from "~/lib/utils";
 import { RulMark } from "~/components/brand/rul-mark";
 import { AnimatedThemeToggler } from "~/components/ui/animated-theme-toggler";
@@ -59,20 +60,14 @@ export function HeaderClient({
           <AnimatedThemeToggler className="inline-flex size-8 items-center justify-center rounded-full border border-transparent text-[var(--text-2)] transition-colors hover:border-[var(--border)] hover:bg-[var(--surface)] hover:text-[var(--text)]" />
           <Show when="signed-out">
             <SignInButton mode="modal">
-              <button
-                type="button"
-                className="inline-flex h-8 items-center justify-center rounded-full px-3 text-sm font-medium text-[var(--text-2)] transition-colors hover:text-[var(--text)]"
-              >
+              <button type="button" className="nav-btn-ghost">
                 Sign in
               </button>
             </SignInButton>
             <SignUpButton mode="modal">
-              <button
-                type="button"
-                className="inline-flex h-8 items-center justify-center rounded-full px-4 text-sm font-medium transition-[filter,transform] hover:brightness-95 active:translate-y-px"
-                style={{ background: "var(--text)", color: "var(--bg)" }}
-              >
-                Join club
+              <button type="button" className="nav-btn-primary">
+                <span>Join club</span>
+                <ArrowRight size={13} strokeWidth={2.5} aria-hidden />
               </button>
             </SignUpButton>
           </Show>

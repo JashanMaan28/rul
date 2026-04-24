@@ -40,8 +40,8 @@ export default async function FundraisersPage() {
             <Eyebrow>Support the club</Eyebrow>
             <h1>Fundraisers.</h1>
             <p className="sub" style={{ marginTop: 10 }}>
-              Ongoing campaigns for prizes, cards, and club events.{" "}
-              {liveCount} live right now.
+              Ongoing campaigns for prizes, cards, and club events. {liveCount}{" "}
+              live right now.
             </p>
           </div>
           {canManage ? (

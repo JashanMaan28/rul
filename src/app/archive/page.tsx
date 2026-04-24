@@ -45,7 +45,13 @@ export default async function ArchivePage() {
           <Reveal
             as="ul"
             stagger
-            style={{ listStyle: "none", padding: 0, margin: 0, display: "grid", gap: 12 }}
+            style={{
+              listStyle: "none",
+              padding: 0,
+              margin: 0,
+              display: "grid",
+              gap: 12,
+            }}
           >
             {archives.map((a) => {
               const snap = parseArchiveSnapshot(a.snapshot);
@@ -61,7 +67,9 @@ export default async function ArchivePage() {
                   >
                     <div className="archive-row-main">
                       <h2 className="archive-row-label">{label}</h2>
-                      <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+                      <div
+                        style={{ display: "flex", flexWrap: "wrap", gap: 8 }}
+                      >
                         <span className="trophy-chip" data-tier="silver">
                           <span className="trophy-chip-dot" aria-hidden />
                           Silver: {communityTop?.displayName ?? "no winner"}

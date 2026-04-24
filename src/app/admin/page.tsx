@@ -72,11 +72,7 @@ export default async function AdminPage() {
                     <td>
                       <div className="role-chip-row">
                         {sortRoles(u.roles).map((r) => (
-                          <span
-                            key={r}
-                            className="role-chip"
-                            data-role={r}
-                          >
+                          <span key={r} className="role-chip" data-role={r}>
                             {r}
                           </span>
                         ))}

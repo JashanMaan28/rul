@@ -99,7 +99,10 @@ function StandingsCard({
               <tr key={row.userId}>
                 <td className="cell-note">{i + 1}</td>
                 <td className="cell-name">{row.displayName}</td>
-                <td className="cell-right" style={{ fontVariantNumeric: "tabular-nums" }}>
+                <td
+                  className="cell-right"
+                  style={{ fontVariantNumeric: "tabular-nums" }}
+                >
                   {row.wins}
                 </td>
               </tr>

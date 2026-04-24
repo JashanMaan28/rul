@@ -18,8 +18,8 @@ export default function OfficersPage() {
             <Eyebrow>Who runs it</Eyebrow>
             <h1>Officer roster.</h1>
             <p className="sub" style={{ marginTop: 10 }}>
-              Elected students plus a teacher rep. Decisions happen in the
-              open, at the Wednesday meeting.
+              Elected students plus a teacher rep. Decisions happen in the open,
+              at the Wednesday meeting.
             </p>
           </div>
         </div>

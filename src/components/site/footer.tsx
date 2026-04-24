@@ -27,7 +27,10 @@ export function Footer() {
                 >
                   Ripon Uno League
                 </div>
-                <div className="mono faint" style={{ fontSize: 11, marginTop: 2 }}>
+                <div
+                  className="mono faint"
+                  style={{ fontSize: 11, marginTop: 2 }}
+                >
                   Est. 2025 · Room 214
                 </div>
               </div>
