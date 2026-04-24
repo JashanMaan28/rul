@@ -121,7 +121,14 @@ export async function listAccessibleRoomsFor(user: User) {
       members: {
         where: { userId: { not: user.id } },
         select: {
-          user: { select: { id: true, displayName: true, avatarUrl: true } },
+          user: {
+            select: {
+              id: true,
+              displayName: true,
+              avatarUrl: true,
+              roles: true,
+            },
+          },
         },
       },
     },

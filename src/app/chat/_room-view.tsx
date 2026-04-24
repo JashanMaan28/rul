@@ -12,6 +12,8 @@ import {
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
 import { Ava } from "~/components/primitives";
+import type { Role } from "../../../generated/prisma";
+import { RoleColoredName } from "./_role-colored-name";
 import {
   deleteMessage,
   markRoomRead,
@@ -24,6 +26,7 @@ type Author = {
   id: string;
   displayName: string;
   avatarUrl: string | null;
+  roles: Role[];
 };
 
 type Message = {
@@ -212,7 +215,10 @@ function MessageRow({
                 data-moderatable="true"
                 data-self={isSelf}
               >
-                {message.author.displayName}
+                <RoleColoredName
+                  name={message.author.displayName}
+                  roles={message.author.roles}
+                />
               </DropdownMenuTrigger>
               <DropdownMenuContent align="start" className="w-44">
                 <div className="text-muted-foreground px-1.5 py-1 text-xs font-medium">
@@ -247,7 +253,10 @@ function MessageRow({
             </DropdownMenu>
           ) : (
             <span className="chat-message-name" data-self={isSelf}>
-              {message.author.displayName}
+              <RoleColoredName
+                name={message.author.displayName}
+                roles={message.author.roles}
+              />
             </span>
           )}
           <span className="chat-message-time">{time}</span>

@@ -6,13 +6,17 @@ import { can } from "~/lib/roles";
 import { channelNameForRoom } from "~/server/ably";
 import { ChatChannelProvider } from "../_ably-provider";
 import { ChatRoomView } from "../_room-view";
+import { RoleColoredName } from "../_role-colored-name";
 
 export default async function ChatRoomPage({
   params,
 }: {
   params: Promise<{ slug: string }>;
 }) {
-  const { slug } = await params;
+  const rawSlug = (await params).slug;
+  // DM slugs contain ':' which Next.js serves back URL-encoded via router.push.
+  // Decode defensively so the stored slug (`dm:...`) matches either form.
+  const slug = decodeURIComponent(rawSlug);
   const user = await getCurrentUser();
   if (!user) notFound();
 
@@ -22,7 +26,14 @@ export default async function ChatRoomPage({
       members: {
         where: { userId: { not: user.id } },
         select: {
-          user: { select: { id: true, displayName: true, avatarUrl: true } },
+          user: {
+            select: {
+              id: true,
+              displayName: true,
+              avatarUrl: true,
+              roles: true,
+            },
+          },
         },
       },
     },
@@ -42,15 +53,15 @@ export default async function ChatRoomPage({
     take: 200,
     include: {
       author: {
-        select: { id: true, displayName: true, avatarUrl: true },
+        select: { id: true, displayName: true, avatarUrl: true, roles: true },
       },
     },
   });
 
-  const headerName =
-    room.kind === "DM"
-      ? (room.members[0]?.user.displayName ?? "Direct message")
-      : room.name.replace(/^#/, "");
+  const dmPartner = room.kind === "DM" ? room.members[0]?.user : null;
+  const headerName = dmPartner
+    ? dmPartner.displayName
+    : room.name.replace(/^#/, "");
 
   return (
     <ChatChannelProvider channelName={channelNameForRoom(room.slug)}>
@@ -60,7 +71,16 @@ export default async function ChatRoomPage({
         ) : (
           <Hash size={14} className="chat-header-icon" />
         )}
-        <h1 className="chat-header-title">{headerName}</h1>
+        <h1 className="chat-header-title">
+          {dmPartner ? (
+            <RoleColoredName
+              name={dmPartner.displayName}
+              roles={dmPartner.roles}
+            />
+          ) : (
+            headerName
+          )}
+        </h1>
         {room.description ? (
           <span className="chat-header-desc">{room.description}</span>
         ) : null}

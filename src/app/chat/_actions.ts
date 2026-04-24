@@ -62,7 +62,7 @@ export async function sendMessage(input: {
     },
     include: {
       author: {
-        select: { id: true, displayName: true, avatarUrl: true },
+        select: { id: true, displayName: true, avatarUrl: true, roles: true },
       },
     },
   });

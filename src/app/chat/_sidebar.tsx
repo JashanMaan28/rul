@@ -6,6 +6,8 @@ import { useTransition } from "react";
 import { toast } from "sonner";
 import { Hash, Lock, Users, Plus } from "lucide-react";
 import { Ava } from "~/components/primitives";
+import type { Role } from "../../../generated/prisma";
+import { RoleColoredName } from "./_role-colored-name";
 import { startDm } from "./_actions";
 
 type Room = {
@@ -18,6 +20,7 @@ type Room = {
     id: string;
     displayName: string;
     avatarUrl: string | null;
+    roles: Role[];
   } | null;
   unreadCount: number;
 };
@@ -26,6 +29,7 @@ type Officer = {
   id: string;
   displayName: string;
   avatarUrl: string | null;
+  roles: Role[];
 };
 
 function initials(name: string): string {
@@ -83,11 +87,7 @@ export function ChatSidebar({
                   data-active={active}
                   style={{ textDecoration: "none" }}
                 >
-                  {room.isOfficerOnly ? (
-                    <Lock size={14} />
-                  ) : (
-                    <Hash size={14} />
-                  )}
+                  {room.isOfficerOnly ? <Lock size={14} /> : <Hash size={14} />}
                   <span className="chat-nav-item-label">
                     {room.name.replace(/^#/, "")}
                   </span>
@@ -110,6 +110,7 @@ export function ChatSidebar({
             {dmRooms.map((room) => {
               const active = activeSlug === room.slug;
               const name = room.otherMember?.displayName ?? "Unknown";
+              const roles = room.otherMember?.roles ?? [];
               return (
                 <li key={room.id}>
                   <Link
@@ -119,7 +120,9 @@ export function ChatSidebar({
                     style={{ textDecoration: "none" }}
                   >
                     <Ava init={initials(name)} size={22} />
-                    <span className="chat-nav-item-label">{name}</span>
+                    <span className="chat-nav-item-label">
+                      <RoleColoredName name={name} roles={roles} />
+                    </span>
                     {!active && room.unreadCount > 0 ? (
                       <span className="chat-nav-item-trailing chat-unread-pill">
                         {room.unreadCount > 50 ? "50+" : room.unreadCount}
@@ -150,7 +153,10 @@ export function ChatSidebar({
                 >
                   <Plus size={14} />
                   <span className="chat-nav-item-label">
-                    {officer.displayName}
+                    <RoleColoredName
+                      name={officer.displayName}
+                      roles={officer.roles}
+                    />
                   </span>
                 </button>
               </li>
