@@ -48,6 +48,12 @@ function displayNameFor(user: ClerkUserShape, email: string): string {
  * Upsert a User row from a Clerk user object. Applies FOUNDER/ADMIN seed from
  * env on first create; on update, only promotes roles (never demotes), so
  * admin-controlled role assignments aren't stomped by re-syncs.
+ *
+ * Falls back to email when the id doesn't match — a Clerk account recreated
+ * under a new id (e.g. deleted and re-signed-up) would otherwise collide with
+ * the stale row's unique email. We reassign the id on the existing row so the
+ * user keeps their data; Prisma's default `onUpdate: Cascade` propagates the
+ * rename to FK tables.
  */
 export async function upsertUserFromClerk(
   clerkUser: ClerkUserShape,
@@ -60,38 +66,37 @@ export async function upsertUserFromClerk(
   const avatarUrl = clerkUser.imageUrl || null;
   const seedRoles = seedRolesForEmail(email);
 
-  const existing = await db.user.findUnique({
-    where: { id: clerkUser.id },
-    select: { roles: true },
-  });
+  return db.$transaction(async (tx) => {
+    const byId = await tx.user.findUnique({ where: { id: clerkUser.id } });
+    const existing = byId ?? (await tx.user.findUnique({ where: { email } }));
 
-  // Only apply seed roles to an existing user if they're still at the default
-  // `[MEMBER]` (never been touched by an admin). If they have any other role
-  // configuration, preserve it — admin edits win over env seeds on re-sync.
-  let nextRoles: Role[] | undefined;
-  if (
-    seedRoles &&
-    existing?.roles?.length === 1 &&
-    existing.roles[0] === Role.MEMBER
-  ) {
-    nextRoles = seedRoles;
-  }
+    if (!existing) {
+      return tx.user.create({
+        data: {
+          id: clerkUser.id,
+          email,
+          displayName,
+          avatarUrl,
+          roles: seedRoles ?? [Role.MEMBER],
+        },
+      });
+    }
 
-  return db.user.upsert({
-    where: { id: clerkUser.id },
-    create: {
-      id: clerkUser.id,
-      email,
-      displayName,
-      avatarUrl,
-      roles: seedRoles ?? [Role.MEMBER],
-    },
-    update: {
-      email,
-      displayName,
-      avatarUrl,
-      ...(nextRoles ? { roles: nextRoles } : {}),
-    },
+    const shouldReseed =
+      seedRoles &&
+      existing.roles.length === 1 &&
+      existing.roles[0] === Role.MEMBER;
+
+    return tx.user.update({
+      where: { id: existing.id },
+      data: {
+        ...(existing.id !== clerkUser.id ? { id: clerkUser.id } : {}),
+        email,
+        displayName,
+        avatarUrl,
+        ...(shouldReseed ? { roles: seedRoles } : {}),
+      },
+    });
   });
 }
 
