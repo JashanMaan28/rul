@@ -1,8 +1,21 @@
-:root {
-  --white: hsl(0, 0%, 100%);
-  --border-color: #2f293a;
-  --background-dark: #120f17;
-  color-scheme: light dark;
+/* Theme-aware tokens, scoped to the bento so they don't leak.
+   Dark is the default; light opts in via [data-theme="light"]. */
+.bento-section {
+  --mb-card-bg: #120f17;
+  --mb-card-border: #2f293a;
+  --mb-card-text: hsl(0, 0%, 100%);
+  --mb-card-shadow: rgba(0, 0, 0, 0.15);
+  --mb-card-shadow-strong: rgba(0, 0, 0, 0.4);
+  --mb-spotlight-blend: screen;
+}
+
+:root[data-theme="light"] .bento-section {
+  --mb-card-bg: #ffffff;
+  --mb-card-border: var(--border);
+  --mb-card-text: var(--text);
+  --mb-card-shadow: rgba(9, 9, 11, 0.08);
+  --mb-card-shadow-strong: rgba(9, 9, 11, 0.12);
+  --mb-spotlight-blend: multiply;
 }
 
 /* Fallback used by hover glow shadows — individual cards override via inline --glow-color */
@@ -28,8 +41,9 @@
   max-width: 100%;
   padding: 1.25em;
   border-radius: 20px;
-  border: 1px solid var(--border-color);
-  background: var(--background-dark);
+  border: 1px solid var(--mb-card-border);
+  background: var(--mb-card-bg);
+  color: var(--mb-card-text);
   font-weight: 300;
   overflow: hidden;
   transition: all 0.3s ease;
@@ -42,14 +56,14 @@
 
 .magic-bento-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 8px 25px var(--mb-card-shadow);
 }
 
 .magic-bento-card__header,
 .magic-bento-card__content {
   display: flex;
   position: relative;
-  color: var(--white);
+  color: var(--mb-card-text);
 }
 
 .magic-bento-card__header {
@@ -197,7 +211,7 @@
 
 .magic-bento-card--border-glow:hover {
   box-shadow:
-    0 4px 20px rgba(0, 0, 0, 0.4),
+    0 4px 20px var(--mb-card-shadow-strong),
     0 0 30px rgba(var(--glow-color), 0.2);
 }
 
@@ -220,16 +234,20 @@
 
 .particle-container:hover {
   box-shadow:
-    0 4px 20px rgba(0, 0, 0, 0.2),
+    0 4px 20px var(--mb-card-shadow),
     0 0 30px rgba(var(--glow-color), 0.2);
 }
 
 /* Global spotlight styles */
 .global-spotlight {
-  mix-blend-mode: screen;
+  mix-blend-mode: var(--mb-spotlight-blend, screen);
   will-change: transform, opacity;
   z-index: 200 !important;
   pointer-events: none;
+}
+
+:root[data-theme="light"] .global-spotlight {
+  mix-blend-mode: multiply;
 }
 
 .bento-section {
