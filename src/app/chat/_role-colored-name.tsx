@@ -2,7 +2,7 @@
 
 import ShinyText from "~/components/ShinyText";
 import { roleBadgeStyleFor } from "~/lib/roles";
-import type { Role } from "../../../generated/prisma";
+import type { Role } from "../../../generated/prisma/browser";
 
 export function RoleColoredName({
   name,

@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
-import { Role } from "../../../generated/prisma";
+import { Role } from "../../../generated/prisma/browser";
 import { db } from "~/server/db";
 import { requirePermission } from "~/lib/user";
 import { ASSIGNABLE_ROLES, can } from "~/lib/roles";

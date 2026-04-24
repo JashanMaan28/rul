@@ -1,7 +1,7 @@
 import "server-only";
 
 import { auth, currentUser } from "@clerk/nextjs/server";
-import { Role, type User } from "../../generated/prisma";
+import { Role, type User } from "../../generated/prisma/browser";
 import { db } from "~/server/db";
 import { env } from "~/env";
 import { can, type Permission } from "~/lib/roles";

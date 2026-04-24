@@ -12,7 +12,7 @@ import {
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
 import { Ava } from "~/components/primitives";
-import type { Role } from "../../../generated/prisma";
+import type { Role } from "../../../generated/prisma/browser";
 import { RoleColoredName } from "./_role-colored-name";
 import {
   deleteMessage,

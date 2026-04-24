@@ -3,7 +3,8 @@
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
-import { Show, SignUpButton } from "@clerk/nextjs";
+import { Show } from "@clerk/nextjs";
+import { SignUpTrigger } from "~/components/site/sign-up-trigger";
 import { ArrowRight } from "lucide-react";
 import { useReducedMotion } from "~/hooks/use-reduced-motion";
 import { Ticker } from "~/components/primitives";
@@ -83,13 +84,11 @@ export function Hero() {
 
           <div className="hero-cta" style={introStyle(".55s", 10)}>
             <Show when="signed-out">
-              <SignUpButton mode="modal">
-                <button type="button" className="btn-beam">
-                  <span>
-                    Join the league <ArrowRight size={14} />
-                  </span>
-                </button>
-              </SignUpButton>
+              <SignUpTrigger type="button" className="btn-beam">
+                <span>
+                  Join the league <ArrowRight size={14} />
+                </span>
+              </SignUpTrigger>
             </Show>
             <Show when="signed-in">
               <Link href="/chat" className="btn-beam">

@@ -10,7 +10,7 @@ import {
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
 import { ASSIGNABLE_ROLES, ROLE_DESCRIPTIONS } from "~/lib/roles";
-import type { Role } from "../../../generated/prisma";
+import type { Role } from "../../../generated/prisma/browser";
 import { updateUserRoles } from "./_actions";
 
 type Props = {

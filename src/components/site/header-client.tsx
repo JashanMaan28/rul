@@ -3,10 +3,11 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import { Show, SignInButton, SignUpButton, UserButton } from "@clerk/nextjs";
+import { Show, SignInButton, UserButton } from "@clerk/nextjs";
 import { ArrowRight } from "lucide-react";
 import { cn } from "~/lib/utils";
 import { RulMark } from "~/components/brand/rul-mark";
+import { SignUpTrigger } from "~/components/site/sign-up-trigger";
 import { AnimatedThemeToggler } from "~/components/ui/animated-theme-toggler";
 import {
   MobileNav,
@@ -64,12 +65,10 @@ export function HeaderClient({
                 Sign in
               </button>
             </SignInButton>
-            <SignUpButton mode="modal">
-              <button type="button" className="nav-btn-primary">
-                <span>Join club</span>
-                <ArrowRight size={13} strokeWidth={2.5} aria-hidden />
-              </button>
-            </SignUpButton>
+            <SignUpTrigger type="button" className="nav-btn-primary">
+              <span>Join club</span>
+              <ArrowRight size={13} strokeWidth={2.5} aria-hidden />
+            </SignUpTrigger>
           </Show>
           <Show when="signed-in">
             <UserButton appearance={{ elements: { avatarBox: "h-8 w-8" } }} />
@@ -122,15 +121,13 @@ export function HeaderClient({
                   Sign in
                 </button>
               </SignInButton>
-              <SignUpButton mode="modal">
-                <button
-                  onClick={() => setMobileOpen(false)}
-                  className="rounded-lg px-3 py-2 text-center text-sm font-medium"
-                  style={{ background: "var(--text)", color: "var(--bg)" }}
-                >
-                  Join club
-                </button>
-              </SignUpButton>
+              <SignUpTrigger
+                onClick={() => setMobileOpen(false)}
+                className="rounded-lg px-3 py-2 text-center text-sm font-medium"
+                style={{ background: "var(--text)", color: "var(--bg)" }}
+              >
+                Join club
+              </SignUpTrigger>
             </Show>
             <Show when="signed-in">
               <div className="flex justify-center py-2">

@@ -6,7 +6,7 @@ import { useTransition } from "react";
 import { toast } from "sonner";
 import { Hash, Lock, Users, Plus } from "lucide-react";
 import { Ava } from "~/components/primitives";
-import type { Role } from "../../../generated/prisma";
+import type { Role } from "../../../generated/prisma/browser";
 import { RoleColoredName } from "./_role-colored-name";
 import { startDm } from "./_actions";
 

@@ -3,7 +3,7 @@ import { getCurrentUser } from "~/lib/user";
 import { listAccessibleRoomsFor } from "~/server/chat";
 import { db } from "~/server/db";
 import { can } from "~/lib/roles";
-import { Role } from "../../../generated/prisma";
+import { Role } from "../../../generated/prisma/browser";
 import { ChatSidebar } from "./_sidebar";
 import { AblyChatProvider } from "./_ably-provider";
 

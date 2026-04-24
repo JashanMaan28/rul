@@ -5,7 +5,7 @@ import { auth } from "@clerk/nextjs/server";
 import { db } from "~/server/db";
 
 const schema = z.object({
-  email: z.string().email().max(200),
+  email: z.email().max(200),
   topic: z.string().min(1).max(40).default("leaderboard"),
 });
 

@@ -1,6 +1,6 @@
 import "server-only";
 import { db } from "~/server/db";
-import type { User } from "../../generated/prisma";
+import type { User } from "../../generated/prisma/browser";
 import { can } from "~/lib/roles";
 
 export const DEFAULT_ROOMS = [

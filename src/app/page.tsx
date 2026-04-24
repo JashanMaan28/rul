@@ -9,7 +9,8 @@ import {
   Users,
   Vote,
 } from "lucide-react";
-import { Show, SignUpButton } from "@clerk/nextjs";
+import { Show } from "@clerk/nextjs";
+import { SignUpTrigger } from "~/components/site/sign-up-trigger";
 import { Hero } from "./_hero";
 import {
   CountUp,
@@ -525,11 +526,9 @@ export default function HomePage() {
                 }}
               >
                 <Show when="signed-out">
-                  <SignUpButton mode="modal">
-                    <button type="button" className="btn btn-primary">
-                      Create account
-                    </button>
-                  </SignUpButton>
+                  <SignUpTrigger type="button" className="btn btn-primary">
+                    Create account
+                  </SignUpTrigger>
                 </Show>
                 <Show when="signed-in">
                   <Link href="/chat" className="btn btn-primary">

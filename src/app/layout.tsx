@@ -5,7 +5,7 @@ import { Inter, JetBrains_Mono, Archivo_Black } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
 import { Header } from "~/components/site/header";
 import { Footer } from "~/components/site/footer";
-import { ThemeProvider } from "~/components/site/theme-provider";
+import { ThemeProvider, ThemeScript } from "~/components/site/theme-provider";
 import { RevealObserver } from "~/components/primitives/reveal-observer";
 import { Toaster } from "~/components/ui/sonner";
 
@@ -48,6 +48,9 @@ export default function RootLayout({
         suppressHydrationWarning
         className={`${inter.variable} ${jetbrainsMono.variable} ${archivoBlack.variable}`}
       >
+        <head>
+          <ThemeScript />
+        </head>
         <body className="bg-background text-foreground min-h-screen font-sans antialiased">
           <ThemeProvider>
             <RevealObserver />

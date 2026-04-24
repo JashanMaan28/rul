@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Moon, Sun } from "lucide-react";
 import { flushSync } from "react-dom";
-import { useTheme } from "next-themes";
+import { useTheme } from "~/components/site/theme-provider";
 
 import { cn } from "~/lib/utils";
 
@@ -139,6 +139,7 @@ export const AnimatedThemeToggler = ({
   const [mounted, setMounted] = useState(false);
   const buttonRef = useRef<HTMLButtonElement>(null);
 
+  // eslint-disable-next-line react-hooks/set-state-in-effect -- client-only mount gate to avoid theme hydration flash
   useEffect(() => setMounted(true), []);
 
   const isDark = mounted ? resolvedTheme !== "light" : true;
