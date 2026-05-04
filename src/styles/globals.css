@@ -1452,6 +1452,200 @@ button:hover .rul-mark {
   line-height: 1.5;
 }
 
+/* ---------- Rich text editor ---------- */
+.rte {
+  width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+.rte:focus-within {
+  border-color: color-mix(in srgb, var(--uno-blue) 55%, var(--border));
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--uno-blue) 18%, transparent);
+}
+.rte-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 6px;
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface-2);
+}
+.rte-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding-right: 6px;
+  border-right: 1px solid var(--border);
+}
+.rte-group:last-child {
+  border-right: none;
+  padding-right: 0;
+}
+.rte-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text-2);
+  cursor: pointer;
+  transition:
+    background 0.12s ease,
+    color 0.12s ease,
+    border-color 0.12s ease;
+}
+.rte-btn:hover:not(:disabled) {
+  background: var(--surface);
+  color: var(--text);
+}
+.rte-btn:focus-visible {
+  outline: none;
+  border-color: color-mix(in srgb, var(--uno-blue) 55%, var(--border));
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--uno-blue) 25%, transparent);
+}
+.rte-btn[data-active="true"] {
+  background: color-mix(in srgb, var(--uno-blue) 18%, var(--surface));
+  color: var(--text);
+  border-color: color-mix(in srgb, var(--uno-blue) 35%, var(--border));
+}
+.rte-btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+.rte-color-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+.rte-content {
+  min-height: 280px;
+  max-height: 600px;
+  overflow-y: auto;
+  padding: 14px 16px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--text);
+  outline: none;
+}
+.rte-content--loading {
+  color: var(--text-3);
+  font-size: 13px;
+  font-family: var(--font-mono);
+}
+.rte-content > *:first-child {
+  margin-top: 0;
+}
+.rte-content > *:last-child {
+  margin-bottom: 0;
+}
+.rte-content p {
+  margin: 0 0 0.6em;
+}
+.rte-content h1,
+.rte-content h2,
+.rte-content h3 {
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.25;
+  margin: 1em 0 0.4em;
+}
+.rte-content h1 {
+  font-size: 22px;
+}
+.rte-content h2 {
+  font-size: 18px;
+}
+.rte-content h3 {
+  font-size: 15px;
+}
+.rte-content ul,
+.rte-content ol {
+  margin: 0 0 0.8em;
+  padding-left: 1.5em;
+}
+.rte-content ul {
+  list-style: disc;
+}
+.rte-content ol {
+  list-style: decimal;
+}
+.rte-content li {
+  margin: 0.15em 0;
+}
+.rte-content li > p {
+  margin: 0;
+}
+.rte-content blockquote {
+  margin: 0.6em 0;
+  padding: 4px 12px;
+  border-left: 3px solid var(--border-strong);
+  color: var(--text-2);
+}
+.rte-content code {
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+}
+.rte-content pre {
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 12px;
+  overflow-x: auto;
+}
+.rte-content pre code {
+  background: transparent;
+  border: none;
+  padding: 0;
+}
+.rte-content hr {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 1em 0;
+}
+.rte-content a {
+  color: color-mix(in srgb, var(--uno-blue) 80%, var(--text));
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.rte-content img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+}
+.rte-content .ProseMirror-focused {
+  outline: none;
+}
+.rte-content p.is-editor-empty:first-child::before,
+.rte-content[data-placeholder]:empty::before {
+  content: attr(data-placeholder);
+  color: var(--text-3);
+  pointer-events: none;
+  float: left;
+  height: 0;
+}
+
 /* ---------- Back link ---------- */
 .back-link {
   display: inline-flex;

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { unstable_rethrow } from "next/navigation";
 import { toast } from "sonner";
+import { RichTextEditor } from "~/components/ui/rich-text-editor";
 import { createMinutes, updateMinutes } from "./_actions";
 
 type Defaults = {
@@ -65,19 +66,15 @@ export function MinutesForm(props: Props) {
 
       <div className="form-field">
         <label htmlFor="content">Minutes</label>
-        <textarea
-          id="content"
+        <RichTextEditor
           name="content"
-          required
-          maxLength={20000}
-          rows={14}
           defaultValue={defaults?.content ?? ""}
-          placeholder={`## Attendance\n- \n\n## Recap\n- \n\n## Immediate goals\n- `}
-          className="form-textarea"
-          style={{ fontFamily: "var(--font-mono)", fontSize: 13 }}
+          placeholder="Attendance, recap, immediate goals…"
+          ariaLabel="Meeting minutes body"
         />
         <p className="form-help">
-          Supports Markdown — headings, lists, links, **bold**, tables.
+          Saved as Markdown — formatting, headings, lists, links, and images
+          all round-trip cleanly.
         </p>
       </div>
 
