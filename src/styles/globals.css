@@ -2215,51 +2215,6 @@ button:hover .rul-mark {
   border-radius: 10px;
   background: color-mix(in srgb, var(--surface-2) 60%, transparent);
 }
-.const-signatures {
-  margin-top: 8px;
-  padding: 22px 24px;
-  border: 1px dashed var(--border-strong);
-  border-radius: 14px;
-}
-.const-signatures h3 {
-  font-family: var(--font-display);
-  font-size: 18px;
-  letter-spacing: -0.01em;
-  margin: 0;
-}
-.const-signatures ul {
-  list-style: none;
-  margin: 18px 0 0;
-  padding: 0;
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 14px;
-}
-@media (min-width: 640px) {
-  .const-signatures ul {
-    grid-template-columns: 1fr 1fr;
-  }
-}
-.const-signatures li {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  font-size: 13px;
-  color: var(--text-2);
-}
-.sig-line {
-  flex: 0 0 110px;
-  height: 1px;
-  background: var(--border-strong);
-}
-.sig-role {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--text-3);
-}
-
 /* ---------- Trophy mockups (leaderboard stub) ---------- */
 .trophy-row {
   display: flex;

@@ -364,17 +364,6 @@ const ARTICLES: Article[] = [
   },
 ];
 
-const SIGNATORIES = [
-  "Principal",
-  "ASB Director",
-  "Club Advisor (Mr. Kissee)",
-  "President / Co-Presidents",
-  "Vice President",
-  "Treasurer",
-  "Secretary",
-  "Publicity Officer",
-];
-
 export default function ConstitutionPage() {
   return (
     <Section accent="red">
@@ -417,21 +406,6 @@ export default function ConstitutionPage() {
               </div>
             </article>
           ))}
-
-          <section className="const-signatures">
-            <h3>Signatures</h3>
-            <p className="muted" style={{ fontSize: 13.5, marginTop: 6 }}>
-              Ratified upon signature by the following parties.
-            </p>
-            <ul>
-              {SIGNATORIES.map((role) => (
-                <li key={role}>
-                  <span className="sig-line" aria-hidden />
-                  <span className="sig-role">{role}</span>
-                </li>
-              ))}
-            </ul>
-          </section>
         </Reveal>
       </div>
     </Section>
