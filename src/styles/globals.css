@@ -2124,6 +2124,142 @@ button:hover .rul-mark {
   margin: 0 auto;
 }
 
+/* ---------- Constitution ---------- */
+.constitution {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+.preamble {
+  margin: 0;
+  padding: 22px 26px;
+  border-left: 3px solid var(--uno-red);
+  background: color-mix(in srgb, var(--uno-red) 6%, var(--surface));
+  border-radius: 0 12px 12px 0;
+  font-size: 15.5px;
+  line-height: 1.65;
+  color: var(--text);
+  font-style: italic;
+}
+.const-article {
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 22px 24px;
+  background: color-mix(in srgb, var(--surface) 70%, transparent);
+}
+.const-article-head {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-bottom: 14px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+}
+.const-numeral {
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.const-article-head h2 {
+  font-family: var(--font-display);
+  font-size: clamp(20px, 2.4vw, 26px);
+  letter-spacing: -0.01em;
+  line-height: 1.1;
+  margin: 0;
+}
+.const-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.const-section {
+  display: grid;
+  grid-template-columns: 28px 1fr;
+  gap: 14px;
+  align-items: start;
+}
+.const-section-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--text-3);
+  padding-top: 4px;
+  text-align: right;
+}
+.const-section-body {
+  font-size: 14.5px;
+  line-height: 1.65;
+  color: var(--text-2);
+}
+.const-section-body p {
+  margin: 0 0 10px;
+}
+.const-section-body p:last-child {
+  margin-bottom: 0;
+}
+.const-section-body strong {
+  color: var(--text);
+  font-weight: 600;
+}
+.officer-list {
+  list-style: none;
+  margin: 12px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.officer-list li {
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--surface-2) 60%, transparent);
+}
+.const-signatures {
+  margin-top: 8px;
+  padding: 22px 24px;
+  border: 1px dashed var(--border-strong);
+  border-radius: 14px;
+}
+.const-signatures h3 {
+  font-family: var(--font-display);
+  font-size: 18px;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+.const-signatures ul {
+  list-style: none;
+  margin: 18px 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+}
+@media (min-width: 640px) {
+  .const-signatures ul {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+.const-signatures li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 13px;
+  color: var(--text-2);
+}
+.sig-line {
+  flex: 0 0 110px;
+  height: 1px;
+  background: var(--border-strong);
+}
+.sig-role {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+
 /* ---------- Trophy mockups (leaderboard stub) ---------- */
 .trophy-row {
   display: flex;
