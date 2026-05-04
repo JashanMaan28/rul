@@ -3,6 +3,7 @@ import {
   CalendarClock,
   ClipboardList,
   Gift,
+  ScrollText,
   Sparkles,
   Trophy,
   Users,
@@ -21,106 +22,15 @@ import {
 } from "~/components/primitives";
 import MagicBento from "~/components/MagicBento";
 import { OFFICERS, ROLE_LABEL } from "~/lib/officers";
+import {
+  ConstitutionPreview,
+  FundraiserPreview,
+  MembersPreview,
+  MinutesPreview,
+  PollPreview,
+} from "./_bento-previews";
 
 const DAYS = ["Mon", "Tue", "Wed", "Thu"] as const;
-
-const META_STYLE: React.CSSProperties = {
-  fontFamily: "var(--font-mono)",
-  fontSize: 10,
-  letterSpacing: "0.1em",
-  textTransform: "uppercase",
-  color: "var(--text-3)",
-};
-
-type MinuteItem = { done: boolean; label: string };
-
-const MINUTE_ITEMS: MinuteItem[] = [
-  { done: true, label: "Attendance · 18 of 22" },
-  { done: true, label: "Nationals travel budget" },
-  { done: false, label: "Custom wild cards vote" },
-  { done: false, label: "Seven-O Swap bracket" },
-];
-
-function MinutesPreview() {
-  const done = MINUTE_ITEMS.filter((i) => i.done).length;
-  return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        gap: 12,
-        padding: "14px 16px",
-        borderRadius: 14,
-        border: "1px solid var(--border)",
-        background:
-          "linear-gradient(180deg, var(--surface-2) 0%, color-mix(in srgb, var(--surface) 80%, var(--surface-2)) 100%)",
-      }}
-    >
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          paddingBottom: 10,
-          borderBottom: "1px solid var(--border)",
-        }}
-      >
-        <span style={META_STYLE}>Wed · Apr 23</span>
-        <span
-          style={{
-            fontFamily: "var(--font-mono)",
-            fontSize: 10.5,
-            letterSpacing: "0.08em",
-            color: "var(--text-2)",
-          }}
-        >
-          {done} / {MINUTE_ITEMS.length}
-        </span>
-      </div>
-      <div style={{ display: "flex", flexDirection: "column", gap: 9 }}>
-        {MINUTE_ITEMS.map((it) => (
-          <div
-            key={it.label}
-            style={{
-              display: "flex",
-              gap: 11,
-              alignItems: "center",
-              fontSize: 13,
-              color: it.done ? "var(--text-3)" : "var(--text)",
-            }}
-          >
-            <span
-              aria-hidden
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                justifyContent: "center",
-                width: 16,
-                height: 16,
-                borderRadius: 5,
-                flexShrink: 0,
-                background: it.done
-                  ? "color-mix(in srgb, var(--uno-green) 32%, var(--surface))"
-                  : "var(--surface)",
-                border: `1px solid ${
-                  it.done
-                    ? "color-mix(in srgb, var(--uno-green) 60%, var(--border))"
-                    : "var(--border-strong)"
-                }`,
-                color: "var(--uno-green)",
-                fontSize: 10,
-                lineHeight: 1,
-              }}
-            >
-              {it.done ? "✓" : ""}
-            </span>
-            <span>{it.label}</span>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
 
 export default function HomePage() {
   return (
@@ -150,7 +60,7 @@ export default function HomePage() {
             clickEffect
             spotlightRadius={400}
             particleCount={12}
-            glowColor="59, 130, 246"
+            glowColor="239, 68, 68"
             disableAnimations={false}
             cardData={[
               {
@@ -201,7 +111,8 @@ export default function HomePage() {
                 icon: <Vote size={18} />,
                 title: "Officers float ideas. Members decide.",
                 description:
-                  "Live polls for custom rules, event picks, and gamemode rotations. Winners get built into the next session.",
+                  "Live polls for custom rules, event picks, and gamemode rotations.",
+                preview: <PollPreview />,
               },
               {
                 accent: "green",
@@ -217,6 +128,7 @@ export default function HomePage() {
                 title: "Fundraiser wall",
                 description:
                   "Student-signed cards fund nationals travel and prize packs.",
+                preview: <FundraiserPreview />,
               },
               {
                 accent: "blue",
@@ -232,6 +144,16 @@ export default function HomePage() {
                     <CountUp to={22} />.
                   </>
                 ),
+                preview: <MembersPreview />,
+              },
+              {
+                label: "Open governance",
+                accent: "yellow",
+                icon: <ScrollText size={18} />,
+                title: "Constitution",
+                description:
+                  "Bylaws ratified by members. Elections, meetings, and amendments — in writing.",
+                preview: <ConstitutionPreview />,
               },
             ]}
           />

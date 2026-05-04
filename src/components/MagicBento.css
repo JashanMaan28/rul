@@ -35,8 +35,7 @@
   flex-direction: column;
   justify-content: space-between;
   position: relative;
-  aspect-ratio: 4/3;
-  min-height: 200px;
+  min-height: 240px;
   width: 100%;
   max-width: 100%;
   padding: 1.25em;
@@ -116,7 +115,15 @@
 
 .magic-bento-card--has-preview .magic-bento-card__preview {
   margin-top: auto;
-  padding-top: 1.25em;
+  padding-top: 1em;
+}
+
+.magic-bento-card--has-preview .magic-bento-card__title {
+  --clamp-title: 2;
+}
+
+.magic-bento-card--has-preview .magic-bento-card__description {
+  --clamp-desc: 2;
 }
 
 .magic-bento-card--text-autohide .magic-bento-card__title,
@@ -236,6 +243,73 @@
   box-shadow:
     0 4px 20px var(--mb-card-shadow),
     0 0 30px rgba(var(--glow-color), 0.2);
+}
+
+/* Bento preview micro-interactions */
+.bento-checkbox {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.bento-checkbox__visual {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border-radius: 5px;
+  flex-shrink: 0;
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  color: var(--uno-green);
+  font-size: 10px;
+  line-height: 1;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    transform 0.15s ease;
+}
+
+.bento-checkbox__visual[data-checked="true"] {
+  background: color-mix(in srgb, var(--uno-green) 32%, var(--surface));
+  border-color: color-mix(in srgb, var(--uno-green) 60%, var(--border));
+}
+
+.bento-checkbox:focus-visible + .bento-checkbox__visual {
+  outline: 2px solid var(--uno-green);
+  outline-offset: 2px;
+}
+
+.bento-article-row:hover {
+  background: var(--surface);
+  color: var(--text);
+}
+
+.bento-article-row:hover .bento-article-row__chevron {
+  transform: translateX(3px);
+  color: var(--uno-yellow);
+}
+
+@keyframes bento-pop {
+  0% {
+    transform: scale(0.4) translateY(8px);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.08) translateY(-2px);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
 }
 
 /* Global spotlight styles */

@@ -37,6 +37,13 @@ const DEFAULT_SPOTLIGHT_RADIUS = 300;
 const DEFAULT_GLOW_COLOR = "132, 0, 255";
 const MOBILE_BREAKPOINT = 768;
 
+const ACCENT_GLOW: Record<NonNullable<BentoCardProps["accent"]>, string> = {
+  red: "239, 68, 68",
+  yellow: "250, 204, 21",
+  green: "34, 197, 94",
+  blue: "59, 130, 246",
+};
+
 const defaultCardData: BentoCardProps[] = [
   {
     color: "#120F17",
@@ -629,11 +636,12 @@ const MagicBento: React.FC<BentoProps> = ({
       <BentoCardGrid gridRef={gridRef}>
         {cards.map((card, index) => {
           const baseClassName = `magic-bento-card ${textAutoHide ? "magic-bento-card--text-autohide" : ""} ${enableBorderGlow ? "magic-bento-card--border-glow" : ""}${card.preview ? " magic-bento-card--has-preview" : ""}`;
+          const cardGlowColor = card.accent ? ACCENT_GLOW[card.accent] : glowColor;
           const cardProps = {
             className: baseClassName,
             style: {
               backgroundColor: card.color,
-              "--glow-color": glowColor,
+              "--glow-color": cardGlowColor,
             } as React.CSSProperties,
           };
 
@@ -644,7 +652,7 @@ const MagicBento: React.FC<BentoProps> = ({
                 {...cardProps}
                 disableAnimations={shouldDisableAnimations}
                 particleCount={particleCount}
-                glowColor={glowColor}
+                glowColor={cardGlowColor}
                 enableTilt={enableTilt}
                 clickEffect={clickEffect}
                 enableMagnetism={enableMagnetism}
