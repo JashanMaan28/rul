@@ -31,7 +31,7 @@ export function Footer() {
                   className="mono faint"
                   style={{ fontSize: 11, marginTop: 2 }}
                 >
-                  Est. 2025 · Room 214
+                  Est. 2026 · Room G3
                 </div>
               </div>
             </div>
@@ -78,13 +78,16 @@ export function Footer() {
             <h5>Contact</h5>
             <ul>
               <li>
-                <span>Room 214 · Mr. Kissee</span>
+                <span>Room G3 · Mr. Kissee</span>
               </li>
               <li>
-                <span>Mon–Thu · 5–8 PM</span>
+                <span>Mon-Thu · 12:17-12:56 PM</span>
               </li>
               <li>
-                <span>rul@riponhs.edu</span>
+                <span>Wednesday · 11:51-12:31 PM</span>
+              </li>
+              <li>
+                <span>62805288@riponusd.net</span>
               </li>
             </ul>
           </div>
