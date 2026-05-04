@@ -2,9 +2,6 @@ import { NextResponse } from "next/server";
 import { env } from "~/env";
 import { rolloverMonth } from "~/server/archive";
 
-export const dynamic = "force-dynamic";
-export const runtime = "nodejs";
-
 export async function GET(request: Request) {
   if (!env.CRON_SECRET) {
     return NextResponse.json(

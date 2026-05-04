@@ -19,3 +19,12 @@ export async function Header() {
 
   return <HeaderClient navLinks={NAV_PUBLIC} showAdmin={showAdmin} />;
 }
+
+export function HeaderSkeleton() {
+  return (
+    <div
+      aria-hidden
+      className="pointer-events-none fixed inset-x-0 top-0 z-40 h-16 w-full"
+    />
+  );
+}

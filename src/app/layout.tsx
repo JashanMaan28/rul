@@ -1,9 +1,10 @@
 import "~/styles/globals.css";
 
+import { Suspense } from "react";
 import { type Metadata } from "next";
 import { Inter, JetBrains_Mono, Archivo_Black } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
-import { Header } from "~/components/site/header";
+import { Header, HeaderSkeleton } from "~/components/site/header";
 import { Footer } from "~/components/site/footer";
 import { ThemeProvider, ThemeScript } from "~/components/site/theme-provider";
 import { Toaster } from "~/components/ui/sonner";
@@ -53,8 +54,12 @@ export default function RootLayout({
         <body className="bg-background text-foreground min-h-screen font-sans antialiased">
           <ThemeProvider>
             <div className="flex min-h-screen flex-col">
-              <Header />
-              <main className="flex-1">{children}</main>
+              <Suspense fallback={<HeaderSkeleton />}>
+                <Header />
+              </Suspense>
+              <main className="flex-1">
+                <Suspense>{children}</Suspense>
+              </main>
               <Footer />
             </div>
             <Toaster richColors position="top-center" />

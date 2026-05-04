@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { RulMark } from "~/components/brand/rul-mark";
+import { CurrentYear } from "~/components/site/current-year";
 
 export function Footer() {
-  const year = new Date().getFullYear();
   return (
     <footer className="footer">
       <div className="container-page">
@@ -94,7 +94,7 @@ export function Footer() {
         </div>
 
         <div className="footer-bottom">
-          <span>© {year} RIPON UNO LEAGUE</span>
+          <span>© <CurrentYear /> RIPON UNO LEAGUE</span>
           <Link href="/constitution">CONSTITUTION · RIPON, CA</Link>
         </div>
       </div>
