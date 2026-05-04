@@ -3,12 +3,18 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import { Show, SignInButton, UserButton } from "@clerk/nextjs";
-import { ArrowRight } from "lucide-react";
+import { Show, SignInButton, UserButton, useClerk } from "@clerk/nextjs";
+import { ArrowRight, CircleUser } from "lucide-react";
 import { cn } from "~/lib/utils";
 import { RulMark } from "~/components/brand/rul-mark";
 import { SignUpTrigger } from "~/components/site/sign-up-trigger";
 import { AnimatedThemeToggler } from "~/components/ui/animated-theme-toggler";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "~/components/ui/dropdown-menu";
 import {
   MobileNav,
   MobileNavHeader,
@@ -30,6 +36,7 @@ export function HeaderClient({
 }) {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const { openSignIn, openSignUp } = useClerk();
 
   const isActive = (href: string) =>
     href === "/" ? pathname === "/" : pathname.startsWith(href);
@@ -61,14 +68,34 @@ export function HeaderClient({
           <AnimatedThemeToggler className="inline-flex size-8 items-center justify-center rounded-full border border-transparent text-[var(--text-2)] transition-colors hover:border-[var(--border)] hover:bg-[var(--surface)] hover:text-[var(--text)]" />
           <Show when="signed-out">
             <SignInButton mode="modal">
-              <button type="button" className="nav-btn-ghost">
+              <button type="button" className="nav-btn-ghost hidden xl:inline-flex">
                 Sign in
               </button>
             </SignInButton>
-            <SignUpTrigger type="button" className="nav-btn-primary">
+            <SignUpTrigger
+              type="button"
+              className="nav-btn-primary hidden xl:inline-flex"
+            >
               <span>Join club</span>
               <ArrowRight size={13} strokeWidth={2.5} aria-hidden />
             </SignUpTrigger>
+            <DropdownMenu>
+              <DropdownMenuTrigger
+                aria-label="Account"
+                className="inline-flex size-8 items-center justify-center rounded-full border border-transparent text-[var(--text-2)] transition-colors hover:border-[var(--border)] hover:bg-[var(--surface)] hover:text-[var(--text)] xl:hidden"
+              >
+                <CircleUser size={18} />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" sideOffset={8} className="w-44">
+                <DropdownMenuItem onClick={() => openSignIn({})}>
+                  Sign in
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => openSignUp({})}>
+                  <span>Join club</span>
+                  <ArrowRight size={13} strokeWidth={2.5} className="ml-auto" />
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </Show>
           <Show when="signed-in">
             <UserButton appearance={{ elements: { avatarBox: "h-8 w-8" } }} />
