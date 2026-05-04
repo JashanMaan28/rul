@@ -15,34 +15,46 @@ const HeroBackdrop = dynamic(
 );
 
 const TICKER_ITEMS = [
-  { key: "a1", dot: "red" as const, children: "AJIT J. — 5 win streak" },
-  { key: "a2", dot: "yellow" as const, children: "MORGAN M. — climbs to #2" },
+  {
+    key: "a1",
+    dot: "yellow" as const,
+    children: "Constitution ratified · read at /constitution",
+  },
+  {
+    key: "a2",
+    dot: "red" as const,
+    children: "Officer elections wrapped · 8 seats filled",
+  },
   {
     key: "a3",
     dot: "blue" as const,
-    children: "VEER D. — new stacker record (+24)",
+    children: "Wednesday meeting · 11:51-12:31 · Room G3",
   },
   {
     key: "a4",
     dot: "green" as const,
-    children: "Seven-O Swap · this Tuesday 4PM · Rm 214",
+    children: "40+ members signed in this semester",
   },
   {
     key: "a5",
-    dot: "red" as const,
-    children: "Pot: $187 raised for nationals",
-  },
-  {
-    key: "a6",
-    dot: "blue" as const,
-    children: "LANDEN M. — Pro bracket upset",
-  },
-  {
-    key: "a7",
     dot: "yellow" as const,
     children: "Custom wild cards passed 17–1",
   },
-  { key: "a8", dot: "green" as const, children: "14 meetings this semester" },
+  {
+    key: "a6",
+    dot: "red" as const,
+    children: "Fundraiser wall live · signed cards inside",
+  },
+  {
+    key: "a7",
+    dot: "blue" as const,
+    children: "Leaderboard launching soon · Pro invites pending",
+  },
+  {
+    key: "a8",
+    dot: "green" as const,
+    children: "Mon/Tue/Thu lunch · 12:17-12:56 · Room G3",
+  },
 ];
 
 export function Hero() {

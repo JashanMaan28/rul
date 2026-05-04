@@ -30,7 +30,12 @@ import {
   PollPreview,
 } from "./_bento-previews";
 
-const DAYS = ["Mon", "Tue", "Wed", "Thu"] as const;
+const DAYS = [
+  { label: "Mon", time: "12:17-12:56 PM" },
+  { label: "Tue", time: "12:17-12:56 PM" },
+  { label: "Wed", time: "11:51-12:31 PM" },
+  { label: "Thu", time: "12:17-12:56 PM" },
+] as const;
 
 export default function HomePage() {
   return (
@@ -165,10 +170,10 @@ export default function HomePage() {
           <div className="section-head">
             <div>
               <Eyebrow>Schedule</Eyebrow>
-              <h2 className="heading-2">Mon–Thu · 5–8 PM.</h2>
+              <h2 className="heading-2">Mon-Thu · 12:17-12:56 PM.</h2>
             </div>
             <p className="sub muted">
-              Room 214, Mr. Kissee. Community games count toward silver
+              Room G3, Mr. Kissee. Community games count toward silver
               trophies. Pro sessions count toward gold. Leaderboards reset on
               the 1st.
             </p>
@@ -180,7 +185,7 @@ export default function HomePage() {
                 <div>
                   <Eyebrow>League week</Eyebrow>
                   <div className="b-title" style={{ marginTop: 6 }}>
-                    Four nights, four modes
+                    Four Lunch, four modes
                   </div>
                 </div>
                 <span className="icon-chip" data-accent="yellow">
@@ -197,7 +202,7 @@ export default function HomePage() {
               >
                 {DAYS.map((day) => (
                   <div
-                    key={day}
+                    key={day.label}
                     style={{
                       background: "var(--surface-2)",
                       border: "1px solid var(--border)",
@@ -215,7 +220,7 @@ export default function HomePage() {
                         color: "var(--text-3)",
                       }}
                     >
-                      {day}
+                      {day.label}
                     </div>
                     <div
                       style={{
@@ -224,7 +229,7 @@ export default function HomePage() {
                         marginTop: 4,
                       }}
                     >
-                      5 – 8 PM
+                      {day.time}
                     </div>
                   </div>
                 ))}
@@ -327,7 +332,7 @@ export default function HomePage() {
                   fontSize: 15,
                 }}
               >
-                Open to anyone at Ripon. No experience required. We&apos;ll
+                Open to anyone at Ripon High. No experience required. We&apos;ll
                 teach you stacking, you&apos;ll teach us your custom wild.
               </p>
               <div
@@ -344,7 +349,7 @@ export default function HomePage() {
                     Create account
                   </SignUpTrigger>
                 </Show>
-                <Link href="/fundraisers" className="btn btn-ghost">
+                <Link href="/fundraisers" className="btn btn-primary">
                   How it works
                 </Link>
               </div>
