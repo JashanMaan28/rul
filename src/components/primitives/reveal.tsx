@@ -1,9 +1,8 @@
 import type { CSSProperties, ElementType, ReactNode } from "react";
-import { cn } from "~/lib/utils";
 
 export function Reveal({
   as: As = "div",
-  stagger = false,
+  stagger: _stagger,
   className,
   children,
   style,
@@ -14,11 +13,9 @@ export function Reveal({
   children?: ReactNode;
   style?: CSSProperties;
 }) {
+  void _stagger;
   return (
-    <As
-      className={cn(stagger ? "reveal-stagger" : "reveal", className)}
-      style={style}
-    >
+    <As className={className} style={style}>
       {children}
     </As>
   );

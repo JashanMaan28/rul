@@ -6,7 +6,6 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { Header } from "~/components/site/header";
 import { Footer } from "~/components/site/footer";
 import { ThemeProvider, ThemeScript } from "~/components/site/theme-provider";
-import { RevealObserver } from "~/components/primitives/reveal-observer";
 import { Toaster } from "~/components/ui/sonner";
 
 export const metadata: Metadata = {
@@ -53,7 +52,6 @@ export default function RootLayout({
         </head>
         <body className="bg-background text-foreground min-h-screen font-sans antialiased">
           <ThemeProvider>
-            <RevealObserver />
             <div className="flex min-h-screen flex-col">
               <Header />
               <main className="flex-1">{children}</main>
